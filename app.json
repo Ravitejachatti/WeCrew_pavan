@@ -1,0 +1,34 @@
+{
+  "expo": {
+    "name": "WeCrew",
+    "slug": "WeCrew",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/Wecrew_logo.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/Wecrew_logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#007AFF"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/Wecrew_logo.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.pavan1113.WeCrew"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "b845f726-7bdb-4fff-b772-648c91e2f150"
+      }
+    }
+  }
+}
