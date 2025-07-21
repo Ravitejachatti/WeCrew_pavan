@@ -7,7 +7,9 @@ import {
   StyleSheet,
   SafeAreaView,
   Image,
+  TouchableOpacity,
 } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { COLORS, SIZES, FONT_FAMILY, FONTS } from "../../../constants/constants";
 
@@ -79,6 +81,12 @@ useEffect(() => {
               <Text style={styles.value}>{item.vehicleType}</Text>
             </View>
           </View>
+          <TouchableOpacity 
+            style={styles.editButton}
+            onPress={() => navigation.navigate('EditVehicle', { vehicle: item })}
+          >
+            <Ionicons name="pencil" size={20} color={COLORS.primary} />
+          </TouchableOpacity>
         </View>
         <View style={styles.divider} />
         <View style={styles.footerRow}>
@@ -111,7 +119,15 @@ useEffect(() => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
       <Text style={styles.header}>My Vehicles</Text>
+        <TouchableOpacity 
+          style={styles.addButton}
+          onPress={() => navigation.navigate('AddVehicle')}
+        >
+          <Ionicons name="add" size={24} color={COLORS.secondary} />
+        </TouchableOpacity>
+      </View>
       <FlatList
         data={vehicles}
         keyExtractor={(item) => item._id}
@@ -139,12 +155,24 @@ const styles = StyleSheet.create({
     backgroundColor: "#F8FAFF",
   },
   header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 18,
+  },
+  header: {
     fontSize: 26,
     fontWeight: "bold",
-    marginBottom: 18,
     color: "#007BFF",
-    textAlign: "center",
     letterSpacing: 1,
+  },
+  addButton: {
+    backgroundColor: COLORS.primary,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   card: {
     backgroundColor: "#fff",
@@ -171,6 +199,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#E3F2FD",
     borderWidth: 1,
     borderColor: "#B3E5FC",
+  },
+  editButton: {
+    padding: 8,
+    borderRadius: 20,
+    backgroundColor: '#e3f2fd',
   },
   title: {
     fontSize: 19,
