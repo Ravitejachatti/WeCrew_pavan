@@ -4,7 +4,7 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { COLORS, SIZES, FONT_FAMILY, FONTS } from "../../constants/constants";
+import { COLORS, SIZES, FONT_FAMILY, FONTS, API } from "../../constants/constants";
 
 const bikeModels = {
    "Aprilia": [
@@ -275,7 +275,7 @@ export default function BikeModelScreen() {
       console.log("Vehicle Data:", vehicleData);
       
       const response = await axios.post(
-        `https://192.168.20.93:3000/api/vehicle/${userId}/vehicles`,  // Updated endpoint
+        `${API}/vehicle/${userId}/vehicles`,  // Updated endpoint
         vehicleData
       );
       

@@ -34,5 +34,7 @@ export const COLORS = {
     large: 20,
     extraLarge: 28,
   };
+
+  export const API = "http://10.156.44.78:3000/api"
   
   

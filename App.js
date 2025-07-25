@@ -14,9 +14,9 @@ import GlobalRequestHandler from './components/GlobalRequestHandler';
 
 
 //basic screens
-import LoginScreen from "./pages/Login";
+import LoginScreen from "./pages/Login"; 
 import OTPScreen from "./pages/Otp";
-import RoleSelectionScreen from "./pages/Roleselection";
+import RoleSelectionScreen from "./pages/Roleselection"; 
 
 
 //user onboarding screens
@@ -72,17 +72,7 @@ export default function App() {
   const [initialRoute, setInitialRoute] = useState(null);
   const navigationRef = useNavigationContainerRef();
 
-  // Save last route (optional)
-  useEffect(() => {
-    const saveCurrentRoute = () => {
-      const currentRoute = navigationRef.getCurrentRoute();
-      if (currentRoute) {
-        AsyncStorage.setItem('lastRoute', currentRoute.name);
-      }
-    };
-    const unsubscribe = navigationRef.addListener('state', saveCurrentRoute);
-    return unsubscribe;
-  }, [navigationRef]);
+
 
   // Set initial route based on userData and role
   useEffect(() => {
@@ -101,19 +91,7 @@ export default function App() {
     };
     checkLogin();
   }, []);
-  // getting the last route from AsyncStorage
-  useEffect(() => {
-    const getLastRoute = async () => {
-      const lastRoute = await AsyncStorage.getItem('lastRoute');
-      if (lastRoute) {
-        console.log("Last route from AsyncStorage:", lastRoute);
-        setInitialRoute(lastRoute);
-      }
-    };
-    getLastRoute();
-  }, []);
 
-  console.log("lastRoute", initialRoute )
 
   // Wait for initialRoute to be set before rendering the navigator
   if (!initialRoute) return null; // or a splash/loading screen

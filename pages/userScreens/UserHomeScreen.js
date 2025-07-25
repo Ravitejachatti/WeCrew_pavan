@@ -8,6 +8,7 @@ import UserBottomNavigator from '../../components/UserBottomNavigator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BackHandler } from 'react-native';
 import { COLORS, SIZES, FONT_FAMILY, FONTS } from "../../constants/constants";
+import RequestStatusRedirectButton from '../../components/RequestStatusRedirectButton';
 
 export default function UserHomeScreen() {
   const [isEV, setIsEV] = useState(false);
@@ -163,6 +164,8 @@ export default function UserHomeScreen() {
           </View>
         </View>
       </ScrollView>
+
+      <RequestStatusRedirectButton/>
 
       {/* Bottom Navigation */}
       <UserBottomNavigator />

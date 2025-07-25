@@ -4,7 +4,7 @@ import { useRoute, useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import { COLORS, SIZES, FONT_FAMILY, FONTS } from "../constants/constants";
+import { COLORS, SIZES, FONT_FAMILY, FONTS, API } from "../constants/constants";
 
 export default function OTPScreen() {
   const route = useRoute();
@@ -12,7 +12,7 @@ export default function OTPScreen() {
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState(["", "", "", ""]);
   const otpInputs = useRef([]);
-  const BASE_URL = 'http://10.156.44.93:3000/api'; 
+  const BASE_URL = `${API}`; 
   const formattedPhone = phone.replace("+", "");
   const [loading, setLoading] = useState(false);
   // Fetch phone number from AsyncStorage

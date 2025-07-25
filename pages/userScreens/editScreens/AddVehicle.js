@@ -14,9 +14,9 @@ import { Ionicons } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { COLORS, SIZES, FONT_FAMILY, FONTS } from '../../../constants/constants';
+import { COLORS, SIZES, FONT_FAMILY, FONTS, API } from '../../../constants/constants';
 
-const BASE_URL = 'https://192.168.20.93:3000/api';
+const BASE_URL = `${API}`;
 
 const AddVehicle = ({ navigation }) => {
   const [loading, setLoading] = useState(false);

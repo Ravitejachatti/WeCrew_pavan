@@ -20,7 +20,7 @@ const VEHICLE_ICONS = {
   Default: "https://cdn-icons-png.flaticon.com/512/854/854894.png",
 };
 
-export default function UserVehicles() {
+export default function UserVehicles({ navigation }) {
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -121,12 +121,6 @@ useEffect(() => {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
       <Text style={styles.header}>My Vehicles</Text>
-        <TouchableOpacity 
-          style={styles.addButton}
-          onPress={() => navigation.navigate('AddVehicle')}
-        >
-          <Ionicons name="add" size={24} color={COLORS.secondary} />
-        </TouchableOpacity>
       </View>
       <FlatList
         data={vehicles}
@@ -144,6 +138,17 @@ useEffect(() => {
           </View>
         }
       />
+
+      {/* Add Vehicle Button BELOW the list */}
+    <View style={styles.addButtonWrapper}>
+      <TouchableOpacity
+        style={styles.addButton}
+        onPress={() => navigation.navigate('AddVehicle')}
+      >
+        <Ionicons name="add" size={24} color={COLORS.secondary} />
+        <Text style={styles.addButtonText}>Add Vehicle</Text>
+      </TouchableOpacity>
+    </View>
     </SafeAreaView>
   );
 }
@@ -261,4 +266,24 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: "bold",
   },
+  addButtonWrapper: {
+  alignItems: 'center',
+  marginTop: 10,
+  marginBottom: 30,
+},
+addButton: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  backgroundColor: COLORS.primary,
+  paddingHorizontal: 20,
+  paddingVertical: 12,
+  borderRadius: 25,
+  elevation: 3,
+},
+addButtonText: {
+  marginLeft: 10,
+  color: COLORS.secondary,
+  fontSize: 16,
+  fontWeight: 'bold',
+},
 });

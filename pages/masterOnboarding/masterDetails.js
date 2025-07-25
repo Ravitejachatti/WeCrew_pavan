@@ -20,7 +20,7 @@ import { StyleSheet } from 'react-native';
 import CustomDatePicker from '../../components/reuableComponents/datePicker';
 import { useNavigation, useRoute} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { COLORS, SIZES, FONT_FAMILY, FONTS } from "../../constants/constants";
+import { COLORS, SIZES, FONT_FAMILY, FONTS, API } from "../../constants/constants";
 
 
 const MasterOnboarding = () => {
@@ -275,7 +275,7 @@ useEffect(() => {
     setLoading(true); // Show loading screen
     console.log(loading)
     try {
-      const response = await fetch('https://192.168.20.93:3000/api/master', {
+      const response = await fetch(`${API}/master`, {
         method: 'POST',
         headers: {
           'Content-Type': 'multipart/form-data',

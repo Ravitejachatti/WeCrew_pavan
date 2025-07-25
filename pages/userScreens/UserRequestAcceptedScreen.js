@@ -5,13 +5,13 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import UserBottomNavigator from "../../components/UserBottomNavigator";
 import { getDatabase, ref, get } from "firebase/database";
 import axios from "axios";
-import { COLORS, SIZES, FONT_FAMILY, FONTS } from "../../constants/constants";
+import { COLORS, SIZES, FONT_FAMILY, FONTS, API } from "../../constants/constants";
 
 const UserRequestAcceptedScreen = ({ navigation }) => {
   const [request, setRequest] = useState(null);
   const [master, setMaster] = useState(null);
   const [loading, setLoading] = useState(true);
-  const BASE_URL = "http://10.156.44.93:3000/api";
+  const BASE_URL = `${API}`;
 
   useEffect(() => {
     const fetchDetails = async () => {

@@ -13,7 +13,8 @@
       "backgroundColor": "#007AFF"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.pavan1113.WeCrew"
     },
     "android": {
       "adaptiveIcon": {

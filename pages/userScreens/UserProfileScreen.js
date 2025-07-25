@@ -9,6 +9,17 @@ import { COLORS, SIZES, FONT_FAMILY, FONTS } from "../../constants/constants";
 
 const UserProfileScreen = ({ navigation }) => {
   const { user, logout } = useAuth();
+  // user details from the async storage
+  const [userData, setUserData] = useState(null);
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const storedUserData = await AsyncStorage.getItem("userData");
+      if (storedUserData) {
+        setUserData(JSON.parse(storedUserData));
+      }
+    };
+    fetchUserData();
+  }, []);
 
   const handleLogout = async () => {
     Alert.alert(
@@ -46,10 +57,10 @@ const UserProfileScreen = ({ navigation }) => {
           source={{ uri: "https://randomuser.me/api/portraits/men/75.jpg" }}
           style={styles.profileImage}
         />
-        <Text style={styles.profileName}>{user?.name || '' }</Text>
-        <Text style={styles.profileEmail}>{user?.email || ''}</Text>
+        <Text style={styles.profileName}>{userData?.name || '' }</Text>
+        <Text style={styles.profileEmail}>{userData?.email || ''}</Text>
         <Text style={styles.profilePhone}>
-          {user?.phone ? `+${user.phone}` : `+${user?.user?.phone}` || ''}
+          {userData?.phone ? `+${userData?.phone}` : `+${userData?.user?.phone}` || ''}
         </Text>
         {/* <Text style={styles.profileUserCode}>
           {user?.userCode ? `User Code: ${user.userCode}` : ""}

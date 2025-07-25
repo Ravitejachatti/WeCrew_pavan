@@ -3,9 +3,9 @@ import { View, Text, TouchableOpacity, StyleSheet, TextInput, Alert, KeyboardAvo
 import { FontAwesome, AntDesign } from '@expo/vector-icons';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from 'axios';
-import { COLORS, SIZES, FONT_FAMILY, FONTS } from "../../constants/constants";
+import { COLORS, SIZES, FONT_FAMILY, FONTS, API } from "../../constants/constants";
 
-const BASE_URL = 'http://10.156.44.93:3000/api'; // Replace with your actual base URL
+const BASE_URL = `${API}`; // Replace with your actual base URL
 
 const UserToMasterRatings = ({ navigation }) => {
   const [rating, setRating] = useState(0);

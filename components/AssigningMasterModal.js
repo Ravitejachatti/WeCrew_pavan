@@ -16,10 +16,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 // Add your firebase import here
 import { getDatabase, ref, get, set, remove } from 'firebase/database';
-import { COLORS, SIZES, FONT_FAMILY, FONTS } from "../constants/constants";
+import { COLORS, SIZES, FONT_FAMILY, FONTS, API } from "../constants/constants";
 
 const { width } = Dimensions.get('window');
-const BASE_URL = 'http://10.156.44.93:3000/api';
+const BASE_URL = `${API}`;
 
 // Use online image URLs for gears and sad face
 const GEAR_BLUE =

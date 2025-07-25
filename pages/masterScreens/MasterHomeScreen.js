@@ -19,10 +19,13 @@ import * as Location from 'expo-location';
 import axios from 'axios';
 import { useAuth } from '../../contexts/AuthContext';
 import { useRequest } from '../../contexts/RequestContext';
-import { COLORS, SIZES, FONT_FAMILY, FONTS } from "../../constants/constants";
+import { COLORS, SIZES, FONT_FAMILY, FONTS, API } from "../../constants/constants";
+import MasterRequestStatusRedirectButton from '../../components/MasterRequestStatusRedirectButton';
+import { use } from 'react';
 
 const MasterHomeScreen = ({ navigation }) => {
   const { user } = useAuth();
+  
   const { isOnDuty, updateDutyStatus } = useRequest();
   const [hasAcceptedRequest, setHasAcceptedRequest] = useState(false);
   const [masterName, setMasterName] = useState('');
@@ -37,10 +40,25 @@ const MasterHomeScreen = ({ navigation }) => {
 
   const [recentRequest, setRecentRequest] = useState(null);
 
-  const BASE_URL = "http://10.156.44.93:3000/api";
+  const BASE_URL = `${API}`;
 
   
-  // Set master name from user context
+  // Set master name from user async storage
+  useEffect(() => {
+    const fetchMasterName = async () => {
+      try {
+        const user = await AsyncStorage.getItem('userData');
+        if (user) {
+          const parsedUser = JSON.parse(user);
+          setMasterName(parsedUser.name || '');
+        }
+      } catch (error) {
+        console.error('Error fetching master name:', error);
+      }
+    };  
+    fetchMasterName();
+  }, []);
+
   useEffect(() => {
     if (user) {
       setMasterName(user.name || '');
@@ -106,6 +124,7 @@ useEffect(() => {
   };
   fetchRecentCompleted();
 }, [user?._id]);
+
   // Get real-time location every second when ON DUTY
   useEffect(() => {
     let locationInterval = null;
@@ -274,6 +293,8 @@ useEffect(() => {
             </View>
           )}
 
+        {/* Tracking current Repair Request */}
+        <MasterRequestStatusRedirectButton/>
 
         {/* Bottom Navigation */}
         <MasterBottomNavigator />

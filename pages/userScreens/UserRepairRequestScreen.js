@@ -7,9 +7,9 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Location from 'expo-location';
 import axios from 'axios';
-import { COLORS, SIZES, FONT_FAMILY, FONTS } from "../../constants/constants";
+import { COLORS, SIZES, FONT_FAMILY, FONTS, API } from "../../constants/constants";
 
-const BASE_URL = "http://10.156.44.93:3000/api";
+const BASE_URL = `${API}`;
 
 const UserRepairRequestScreen = ({ navigation, route }) => {
   const [isSheetVisible, setSheetVisible] = useState(false);
@@ -26,6 +26,7 @@ const UserRepairRequestScreen = ({ navigation, route }) => {
   const [editAddressValue, setEditAddressValue] = useState('');
   const serviceOptions = ['Road Assistance', 'Tires & Wheels', 'Towing'];
   const [userId, setUserId] = useState(null);
+  const [vehicleRegNumber, setVehicleRegNumber] = useState(null);
 
   // For loading indicator during request submission
   const [submitLoading, setSubmitLoading] = useState(false);
@@ -71,15 +72,18 @@ useEffect(() => {
           type: v.vehicleType,
         }))
       );
-      setSelectedVehicle(
-        vehicleArr.length > 0
-          ? {
-              ...vehicleArr[0],
-              regNumber: vehicleArr[0].registrationNumber,
-              type: vehicleArr[0].vehicleType,
-            }
-          : null
-      );
+      if (vehicleArr.length > 0) {
+        const firstVehicle = {
+          ...vehicleArr[0],
+          regNumber: vehicleArr[0].registrationNumber,
+          type: vehicleArr[0].vehicleType,
+        };
+        setSelectedVehicle(firstVehicle);
+        setVehicleRegNumber(firstVehicle.regNumber);
+      } else {
+        setSelectedVehicle(null);
+        setVehicleRegNumber(null);
+      }
       await getCurrentLocation();
     } catch (err) {
       setVehicles([]);
@@ -227,20 +231,28 @@ useEffect(() => {
         <View style={styles.vehicleRow}>
           <View style={{ flex: 1, marginRight: 8 }}>
             <Text style={styles.label}>Vehicle Number</Text>
-            <DropDownPicker
-              open={openVehicleDropdown}
-              value={selectedVehicle?.regNumber}
-              items={vehicles.map(v => ({ label: v.regNumber, value: v.regNumber }))}
-              setOpen={setOpenVehicleDropdown}
-              setValue={val => {
-                const newVehicle = vehicles.find(v => v.regNumber === val);
-                setSelectedVehicle(newVehicle);
-              }}
-              style={styles.dropdownNoBorder}
-              dropDownContainerStyle={styles.dropdownNoBorder}
-              containerStyle={{ width: '100%' }}
-              zIndex={2000}
-            />
+          <DropDownPicker
+            open={openVehicleDropdown}
+            value={vehicleRegNumber}
+            items={vehicles.map(v => ({ label: v.regNumber, value: v.regNumber }))}
+            setOpen={setOpenVehicleDropdown}
+            setValue={(callback) => {
+              const selectedValue = callback(vehicleRegNumber);
+              setVehicleRegNumber(selectedValue);
+              const foundVehicle = vehicles.find(v => v.regNumber === selectedValue);
+              if (foundVehicle) {
+                setSelectedVehicle({
+                  ...foundVehicle,
+                  regNumber: foundVehicle.registrationNumber,
+                  type: foundVehicle.vehicleType,
+                });
+              }
+            }}
+            style={styles.dropdownNoBorder}
+            dropDownContainerStyle={styles.dropdownNoBorder}
+            containerStyle={{ width: '100%' }}
+            zIndex={2000}
+          />
           </View>
           <View style={{ flex: 1, marginLeft: 8 }}>
             <Text style={styles.label}>Your Vehicle</Text>

@@ -13,13 +13,16 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../../contexts/AuthContext';
 import axios from 'axios';
-import { COLORS, SIZES, FONT_FAMILY, FONTS } from '../../../constants/constants';
+import { COLORS, SIZES, FONT_FAMILY, FONTS, API } from '../../../constants/constants';
+import { use } from 'react';
 
 
-const BASE_URL = 'https://192.168.20.93:3000/api';
+const BASE_URL = `${API}`;
 
 const EditUserProfile = ({ navigation }) => {
   const { user, updateUser } = useAuth();
+  const [userData, setUserData] = useState(null);
+
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -29,13 +32,24 @@ const EditUserProfile = ({ navigation }) => {
     dob: '',
   });
 
+    // Get the userData from the async storage
+  useEffect(() => {  
+    const fetchUserData = async () => {
+      const storedUserData = await AsyncStorage.getItem("userData");
+      if (storedUserData) {
+        setUserData(JSON.parse(storedUserData));
+      }
+    };
+    fetchUserData();
+  }, []);
+
   useEffect(() => {
     if (user) {
       setFormData({
-        name: user.name || '',
-        email: user.email || '',
-        phone: user.phone || '',
-        gender: user.gender || '',
+        name: user.name || userData?.name || '',
+        email: user.email || userData?.email || '',
+        phone: user.phone || userData?.phone || '',
+        gender: user.gender || userData?.gender || '',
         dob: user.dob ? new Date(user.dob).toISOString().split('T')[0] : '',
       });
     }
@@ -108,7 +122,7 @@ const EditUserProfile = ({ navigation }) => {
               onChangeText={(value) => handleInputChange('name', value)}
               placeholder="Enter your name"
               placeholderTextColor={COLORS.textLight}
-            />
+            /> 
           </View>
 
           <View style={styles.inputContainer}>
@@ -159,6 +173,9 @@ const EditUserProfile = ({ navigation }) => {
             </View>
           </View>
 
+          {/* Add the date of birth by using calender picker or text input */}
+          {/* give me the calender picker code  */}
+  
           <View style={styles.inputContainer}>
             <Text style={styles.label}>Date of Birth</Text>
             <TextInput

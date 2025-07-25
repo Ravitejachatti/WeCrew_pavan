@@ -20,6 +20,7 @@ import { useRoute } from "@react-navigation/native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { COLORS, SIZES, FONT_FAMILY, FONTS } from "../../constants/constants";
+import { API } from "../../constants/constants"; // Import API constant
 
 export default function BasicDetails() {
   const route = useRoute();
@@ -105,11 +106,11 @@ export default function BasicDetails() {
       };
   
       console.log(userData);
-      const url =
+      const url =   `${API}/user`;
         // selectedRole === "Master"
         //   ? "https://192.168.20.93:3000/api/master"
         //   : 
-          "https://192.168.20.93:3000/api/user";
+        
   
       const response = await axios.post(url, userData);
   

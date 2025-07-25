@@ -14,9 +14,9 @@ import { Ionicons } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
 import { useAuth } from '../../../contexts/AuthContext';
 import axios from 'axios';
-import { COLORS, SIZES, FONT_FAMILY, FONTS } from '../../../constants/constants';
+import { COLORS, SIZES, FONT_FAMILY, FONTS, API } from '../../../constants/constants';
 
-const BASE_URL = 'https://192.168.20.93:3000/api';
+const BASE_URL = `${API}`;
 
 const EditMasterProfile = ({ navigation }) => {
   const { user, updateUser } = useAuth();

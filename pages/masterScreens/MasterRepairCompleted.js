@@ -14,12 +14,12 @@ import SlideToConfirm from '../../components/reuableComponents/slidebar';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Linking } from 'react-native';
-import { COLORS, SIZES, FONT_FAMILY, FONTS } from "../../constants/constants";
+import { COLORS, SIZES, FONT_FAMILY, FONTS, API } from "../../constants/constants";
 import axios from 'axios';
 
 const { width, height } = Dimensions.get('window');
 
-const BASE_URL = 'http://10.156.44.93:3000/api'; // Replace with your actual base URL
+const BASE_URL = `${API}`; // Replace with your actual base URL
 
 const MasterRepairCompleted = ({ navigation }) => {
   const [isModalVisible, setModalVisible] = useState(true);

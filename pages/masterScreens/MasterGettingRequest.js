@@ -11,10 +11,10 @@ import { Audio } from 'expo-av';
 import { BlurView } from 'expo-blur';
 import SlideToConfirm from '../../components/reuableComponents/slidebar';
 import axios from 'axios';
-import { COLORS, SIZES, FONT_FAMILY, FONTS } from "../../constants/constants";
+import { COLORS, SIZES, FONT_FAMILY, FONTS, API } from "../../constants/constants";
 
 const { width } = Dimensions.get('window');
-const BASE_URL = 'http://10.156.44.93:3000/api';
+const BASE_URL = `${API}`; // Ensure API is defined in constants
 
 const MasterGettingRequest = ({ request, onDismiss, navigation }) => {
   // Extract the actual request object if wrapped in a key
