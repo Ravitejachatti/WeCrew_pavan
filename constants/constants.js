@@ -7,7 +7,7 @@ export const COLORS = {
     textLight: "#888",
     border: "#eee",
     toggleActive: "#0D7552",
-    toggleInactive: "#ffffff",
+    toggleInactive: "#ffffff",  
   };
   
   export const SIZES = {

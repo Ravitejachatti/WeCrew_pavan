@@ -3,28 +3,11 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from "react-na
 import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import MasterBottomNavigator from "../../components/MasterBottomNavigator";
+import { useAuth } from "../../contexts/AuthContext";
 import { COLORS, SIZES, FONT_FAMILY, FONTS } from "../../constants/constants";
 
 const MasterProfileScreen = ({ navigation }) => {
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const storedUser = await AsyncStorage.getItem("userData");
-        const userDataTemp = await AsyncStorage.getItem("userDataTemp")
-        if(userDataTemp){
-          setUser(JSON.parse(userDataTemp))
-        }
-        if (storedUser) {
-          setUser(JSON.parse(storedUser));
-        }
-      } catch (err) {
-        setUser(null);
-      }
-    };
-    fetchUser();
-  }, []);
+  const { user, logout } = useAuth();
 
   const handleLogout = async () => {
     Alert.alert(
@@ -35,8 +18,8 @@ const MasterProfileScreen = ({ navigation }) => {
         {
           text: "Logout",
           style: "destructive",
-          onPress: async () => {
-            await AsyncStorage.removeItem("userData");
+          onPress: () => {
+            logout();
             navigation.reset({
               index: 0,
               routes: [{ name: "Login" }],
@@ -52,6 +35,12 @@ const MasterProfileScreen = ({ navigation }) => {
     <View style={styles.container}>
       {/* Profile Section */}
       <View style={styles.profileContainer}>
+        <TouchableOpacity 
+          style={styles.editProfileButton}
+          onPress={() => navigation.navigate('EditMasterProfile')}
+        >
+          <Ionicons name="pencil" size={20} color={COLORS.primary} />
+        </TouchableOpacity>
         <Image
           source={{ uri: "https://randomuser.me/api/portraits/men/75.jpg" }}
           style={styles.profileImage}
@@ -110,6 +99,15 @@ const styles = StyleSheet.create({
   profileContainer: { 
     alignItems: "center", 
     marginBottom: SIZES.margin 
+  },
+  editProfileButton: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    zIndex: 1,
+    backgroundColor: '#e3f2fd',
+    padding: 8,
+    borderRadius: 20,
   },
   profileImage: { 
     width: SIZES.avatarSize * 2, 

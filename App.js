@@ -6,6 +6,12 @@ import { createStackNavigator } from "@react-navigation/stack";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect } from "react";
 
+// Context Providers
+import { AuthProvider } from './contexts/AuthContext';
+import { RequestProvider } from './contexts/RequestContext';
+import { NavigationProvider } from './contexts/NavigationContext';
+import GlobalRequestHandler from './components/GlobalRequestHandler';
+
 
 //basic screens
 import LoginScreen from "./pages/Login";
@@ -52,6 +58,12 @@ import MasterAboutUs from "./pages/masterScreens/profileMenuScreens/MasterAboutU
 import MasterPaymentMethods from "./pages/masterScreens/profileMenuScreens/MasterPaymentMethods";
 import MasterEarnings from "./pages/masterScreens/profileMenuScreens/MasterEarnings";
 import MasterRepairHistory from "./pages/masterScreens/profileMenuScreens/MasterRepairHistory";
+
+//edit screens
+import EditUserProfile from "./pages/userScreens/editScreens/EditUserProfile";
+import EditVehicle from "./pages/userScreens/editScreens/EditVehicle";
+import AddVehicle from "./pages/userScreens/editScreens/AddVehicle";
+import EditMasterProfile from "./pages/masterScreens/editScreens/EditMasterProfile";
 
 const Stack = createStackNavigator();
 
@@ -107,6 +119,9 @@ export default function App() {
   if (!initialRoute) return null; // or a splash/loading screen
 
   return (
+    <AuthProvider>
+      <RequestProvider>
+        <NavigationProvider>
     <GestureHandlerRootView style={{ flex: 1 }}>
     <NavigationContainer ref={navigationRef}>
       <Stack.Navigator initialRouteName={initialRoute} screenOptions={{ headerShown: false }}>
@@ -142,6 +157,11 @@ export default function App() {
         <Stack.Screen name="UserHelpAndSupport" component={UserHelpAndSupport} />
         <Stack.Screen name="UserBookings" component={UserBookings} />
 
+        {/* user edit screens */}
+        <Stack.Screen name="EditUserProfile" component={EditUserProfile} />
+        <Stack.Screen name="EditVehicle" component={EditVehicle} />
+        <Stack.Screen name="AddVehicle" component={AddVehicle} />
+
         {/* master onboarding screens */}
         <Stack.Screen name="masterDetails" component={MasterOnboarding} />
 
@@ -161,8 +181,17 @@ export default function App() {
         <Stack.Screen name="MasterPaymentMethods" component={MasterPaymentMethods} />
         <Stack.Screen name="MasterEarnings" component={MasterEarnings} />
         <Stack.Screen name="MasterRepairHistory" component={MasterRepairHistory} />
+
+        {/* master edit screens */}
+        <Stack.Screen name="EditMasterProfile" component={EditMasterProfile} />
       </Stack.Navigator>
+      
+      {/* Global Request Handler for Masters */}
+      <GlobalRequestHandler />
     </NavigationContainer>
     </GestureHandlerRootView>
+        </NavigationProvider>
+      </RequestProvider>
+    </AuthProvider>
   );
 }

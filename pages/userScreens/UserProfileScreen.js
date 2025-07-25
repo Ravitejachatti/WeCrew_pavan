@@ -3,26 +3,12 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from "react-na
 import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import UserBottomNavigator from "../../components/UserBottomNavigator";
+import { useAuth } from "../../contexts/AuthContext";
 import { COLORS, SIZES, FONT_FAMILY, FONTS } from "../../constants/constants";
 
 
 const UserProfileScreen = ({ navigation }) => {
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const storedUser = await AsyncStorage.getItem("userData");
-        if (storedUser) {
-          setUser(JSON.parse(storedUser));
-          console.log(user)
-        }
-      } catch (err) {
-        setUser(null);
-      }
-    };
-    fetchUser();
-  }, []);
+  const { user, logout } = useAuth();
 
   const handleLogout = async () => {
     Alert.alert(
@@ -33,8 +19,8 @@ const UserProfileScreen = ({ navigation }) => {
         {
           text: "Logout",
           style: "destructive",
-          onPress: async () => {
-            await AsyncStorage.removeItem("userData");
+          onPress: () => {
+            logout();
             navigation.reset({
               index: 0,
               routes: [{ name: "Login" }],
@@ -50,6 +36,12 @@ const UserProfileScreen = ({ navigation }) => {
     <View style={styles.container}>
       {/* Profile Section */}
       <View style={styles.profileContainer}>
+        <TouchableOpacity 
+          style={styles.editProfileButton}
+          onPress={() => navigation.navigate('EditUserProfile')}
+        >
+          <Ionicons name="pencil" size={20} color={COLORS.primary} />
+        </TouchableOpacity>
         <Image
           source={{ uri: "https://randomuser.me/api/portraits/men/75.jpg" }}
           style={styles.profileImage}
@@ -99,6 +91,15 @@ const menuItems = [
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#F9FAFB", paddingHorizontal: 20, paddingTop: 50 },
   profileContainer: { alignItems: "center", marginBottom: 20 },
+  editProfileButton: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    zIndex: 1,
+    backgroundColor: '#e3f2fd',
+    padding: 8,
+    borderRadius: 20,
+  },
   profileImage: { width: 80, height: 80, borderRadius: 40 },
   profileName: { fontSize: 20, fontWeight: "bold", marginTop: 10 },
   profileEmail: { fontSize: 14, color: "#777" },

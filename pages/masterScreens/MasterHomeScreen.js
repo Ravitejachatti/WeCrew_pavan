@@ -6,32 +6,29 @@ import {
   StyleSheet,
   ScrollView,
   Alert,
-  Modal,
   Switch,
   ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import MasterBottomNavigator from '../../components/MasterBottomNavigator';
-import MasterGettingRequest from './MasterGettingRequest';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { db } from '../../firebaseConfig';
 import { ref, set, remove, onValue, get} from "firebase/database";
 import * as Location from 'expo-location';
 import axios from 'axios';
+import { useAuth } from '../../contexts/AuthContext';
+import { useRequest } from '../../contexts/RequestContext';
 import { COLORS, SIZES, FONT_FAMILY, FONTS } from "../../constants/constants";
 
 const MasterHomeScreen = ({ navigation }) => {
-  const [hasRequest, setHasRequest] = useState(null);
-  const [requestDetails, setRequestDetails] = useState(null);
+  const { user } = useAuth();
+  const { isOnDuty, updateDutyStatus } = useRequest();
   const [hasAcceptedRequest, setHasAcceptedRequest] = useState(false);
-  const [isOnDuty, setIsOnDuty] = useState(false);
-  const [masterId, setMasterId] = useState('');
   const [masterName, setMasterName] = useState('');
   const [lat, setLat] = useState(null); 
   const [lon, setLon] = useState(null); 
   const [loading, setLoading] = useState(true);
-  const handledRequestId = useRef(null);
   //stats
   const [totalEarnings, setTotalEarnings] = useState(0);
   const [servicesDone, setServicesDone] = useState(0);
@@ -40,39 +37,22 @@ const MasterHomeScreen = ({ navigation }) => {
 
   const [recentRequest, setRecentRequest] = useState(null);
 
-  const BASE_URL = "https://192.168.20.93:3000/api";
+  const BASE_URL = "http://10.156.44.93:3000/api";
 
   
-  // Fetch master data from AsyncStorage
+  // Set master name from user context
   useEffect(() => {
-    const fetchMasterData = async () => {
-      try {
-        const userData = await AsyncStorage.getItem('userData');
-        const userDataTemp = await AsyncStorage.getItem('userDataTemp')
-        if(userDataTemp){
-          const user = JSON.parse(userDataTemp)
-          setMasterId(user._id);
-          setMasterName(user.name || '')
-        }
-        if (userData) {
-          const user = JSON.parse(userData);
-          setMasterId(user._id);
-          setMasterName(user.name || '');
-        }
-      } catch (e) {
-        setMasterId('');
-        setMasterName('');
-      }
-    };
-    fetchMasterData();
-  }, []);
+    if (user) {
+      setMasterName(user.name || '');
+    }
+  }, [user]);
 
   // Fetch analytics for stats
   useEffect(() => {
   const fetchAnalytics = async () => {
-    if (!masterId) return;
+    if (!user?._id) return;
     try {
-      const response = await axios.get(`${BASE_URL}/master/${masterId}/analytics`);
+      const response = await axios.get(`${BASE_URL}/master/${user._id}/analytics`);
       if (response.data && response.data.status && response.data.analytics) {
         const analytics = response.data.analytics;
         setTotalEarnings(analytics.totalEarnings || 0);
@@ -96,7 +76,7 @@ const MasterHomeScreen = ({ navigation }) => {
     }
   };
   fetchAnalytics();
-}, [masterId]);
+}, [user?._id]);
 
   //fetching the recent completed request
 useEffect(() => {
@@ -125,7 +105,7 @@ useEffect(() => {
     }
   };
   fetchRecentCompleted();
-}, [masterId]);
+}, [user?._id]);
   // Get real-time location every second when ON DUTY
   useEffect(() => {
     let locationInterval = null;
@@ -144,8 +124,8 @@ useEffect(() => {
             setLat(location.coords.latitude);
             setLon(location.coords.longitude);
             // Update Firebase with new location if ON DUTY and masterId exists
-            if (isOnDuty && masterId) {
-              await set(ref(db, `masters/${masterId}`), {
+            if (isOnDuty && user?._id) {
+              await set(ref(db, `masters/${user._id}`), {
                 active: true,
                 lat: location.coords.latitude,
                 lon: location.coords.longitude,
@@ -162,8 +142,8 @@ useEffect(() => {
       getLocationAndUpdate();
     } else {
       // Remove from Firebase when OFF DUTY
-      if (masterId) {
-        remove(ref(db, `masters/${masterId}`));
+      if (user?._id) {
+        remove(ref(db, `masters/${user._id}`));
       }
     }
 
@@ -171,87 +151,19 @@ useEffect(() => {
       isMounted = false;
       if (locationInterval) clearInterval(locationInterval);
     };
-  }, [isOnDuty, masterId]);
+  }, [isOnDuty, user?._id]);
 
-  // Set toggle status based on Firebase on mount
- useEffect(() => {
-  const fetchDutyStatus = async () => {
-    try {
-      const status = await AsyncStorage.getItem('isOnDuty');
-      if (status !== null) {
-        setIsOnDuty(status === 'true');
-      }
-    } catch (e) {
-      setIsOnDuty(false);
-    }
-  };
-  fetchDutyStatus();
-}, []);
-
-  // Listen for requests assigned to this master in Firebase
-  useEffect(() => {
-    if (!masterId || !isOnDuty) return; // Listen only when ON DUTY
-
-    const masterReqRef = ref(db, `masterRequests/${masterId}`);
-    const unsubscribe = onValue(masterReqRef, async (snapshot) => {
-      const data = snapshot.val();
-      console.log(data);
-      setLoading(true);
-
-      if (data) {
-        if (handledRequestId.current !== data.requestId) {
-          handledRequestId.current = data.requestId;
-          setRequestDetails(data);
-          setHasRequest(true);
-        }
-      } else {
-        handledRequestId.current = null;
-        setRequestDetails(null);
-        setHasRequest(false);
-      }
-
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
-  }, [masterId, isOnDuty]);
-
-
-
-
-// useEffect(() => {
-//   const fetchStoredRequest = async () => {
-//     if (hasRequest) {
-//       const stored = await AsyncStorage.getItem('latestMasterRequest');
-//       if (stored) {
-//         setRequestDetails(JSON.parse(stored));
-//       }
-//     }
-//   };
-//   fetchStoredRequest();
-// }, [hasRequest]);
- 
- 
   // Handle On Duty toggle
   const handleDutyToggle = async (value) => {
-  setIsOnDuty(value);
-  await AsyncStorage.setItem('isOnDuty', value ? 'true' : 'false');
-  if (masterId) {
+  updateDutyStatus(value);
+  if (user?._id) {
     if (value) {
-      await set(ref(db, `masters/${masterId}/active`), true);
+      await set(ref(db, `masters/${user._id}/active`), true);
     } else {
-      await set(ref(db, `masters/${masterId}`), { active: false });
+      await set(ref(db, `masters/${user._id}`), { active: false });
     }
   }
 }; 
-
-  // const handleSlideComplete = (value) => {
-  //   if (value) {
-  //     Alert.alert('Repair Accepted ✅');
-  //     setHasAcceptedRequest(true);
-  //   }
-  //   setHasRequest(false);
-  // };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -261,7 +173,7 @@ useEffect(() => {
           <View style={styles.locationContainer}>
             <Ionicons name="location-outline" size={20} color="#000" />
             <Text style={styles.locationText}>
-              {lat && lon ? `Lat: ${lat.toFixed(4)}, Lon: ${lon.toFixed(4)}` : "Fetching location..."}
+              {lat && lon ? `${lat.toFixed(4)}, ${lon.toFixed(4)}` : "Fetching location..."}
             </Text>
           </View>
           {/* Toggle On Duty / Off Duty */}
@@ -289,7 +201,7 @@ useEffect(() => {
           />
           <View style={styles.masterInfo}>
             <Text style={styles.masterName}>{masterName || "Master"}</Text>
-            <Text style={styles.masterId}>Master ID: #{masterId ? masterId.slice(-4) : "----"}</Text>
+            <Text style={styles.masterId}>Master ID: #{user?._id ? user._id.slice(-4) : "----"}</Text>
           </View>
           <View style={styles.shieldIconContainer}>
             <Ionicons name="shield-checkmark-outline" size={24} color="#28a745" />
@@ -366,26 +278,6 @@ useEffect(() => {
         {/* Bottom Navigation */}
         <MasterBottomNavigator />
       </ScrollView>
-
-      {/* Modal for MasterGettingRequest */}
-      <Modal
-        transparent
-        visible={hasRequest}
-        animationType="slide"
-        onRequestClose={() => setHasRequest(false)}
-      >
-        {loading ? (
-          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: "#fff" }}>
-            <ActivityIndicator size="large" color="#007bff" />
-          </View>
-        ) : (
-          <MasterGettingRequest
-            request={requestDetails}
-            onDismiss={() => setHasRequest(false)}
-            navigation={navigation}
-          />
-        )}
-      </Modal>
     </SafeAreaView>
   );
 };
