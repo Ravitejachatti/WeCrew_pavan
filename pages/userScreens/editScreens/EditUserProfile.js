@@ -15,7 +15,8 @@ import { useAuth } from '../../../contexts/AuthContext';
 import axios from 'axios';
 import { COLORS, SIZES, FONT_FAMILY, FONTS } from '../../../constants/constants';
 
-const BASE_URL = 'http://10.156.44.93:3000/api';
+
+const BASE_URL = 'https://192.168.20.93:3000/api';
 
 const EditUserProfile = ({ navigation }) => {
   const { user, updateUser } = useAuth();

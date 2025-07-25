@@ -16,7 +16,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { COLORS, SIZES, FONT_FAMILY, FONTS } from '../../../constants/constants';
 
-const BASE_URL = 'http://10.156.44.93:3000/api';
+const BASE_URL = 'https://192.168.20.93:3000/api';
 
 const AddVehicle = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
