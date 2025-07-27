@@ -9,6 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BackHandler } from 'react-native';
 import { COLORS, SIZES, FONT_FAMILY, FONTS } from "../../constants/constants";
 import RequestStatusRedirectButton from '../../components/RequestStatusRedirectButton';
+import FuelEVToggle from '../../components/reuableComponents/ToggleButtonEv';
 
 export default function UserHomeScreen() {
   const [isEV, setIsEV] = useState(false);
@@ -83,6 +84,7 @@ export default function UserHomeScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
+        
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.greetingContainer}>
@@ -97,12 +99,13 @@ export default function UserHomeScreen() {
           </View>
 
           {/* Show EV toggle only if user has EV vehicle */}
-          {showEVToggle && (
+          <FuelEVToggle onToggle={(isEV) => console.log("User selected:", isEV ? "EV" : "Fuel")}/>
+{/* 
             <TouchableOpacity
               style={[styles.toggleButton, isEV ? styles.activeToggle : styles.inactiveToggle]}
               onPress={toggleSwitch}
             >
-              {/* Animated Circle */}
+             
               <Animated.View 
                 style={[
                   styles.circle, 
@@ -113,7 +116,7 @@ export default function UserHomeScreen() {
                 ]} 
               />
 
-              {/* Animated Text */}
+             
               <Animated.Text
                 style={[
                   styles.toggleText,
@@ -122,8 +125,8 @@ export default function UserHomeScreen() {
               >
                 EV
               </Animated.Text>
-            </TouchableOpacity>
-          )}
+            </TouchableOpacity> */}
+          
         </View>
 
         {/* Promo Banner */}

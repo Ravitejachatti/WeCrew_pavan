@@ -1,4 +1,4 @@
-package com.pavan1113.WeCrew
+package com.WeCrew
 
 import android.os.Build
 import android.os.Bundle

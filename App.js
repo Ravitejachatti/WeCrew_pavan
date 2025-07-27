@@ -64,6 +64,10 @@ import EditUserProfile from "./pages/userScreens/editScreens/EditUserProfile";
 import EditVehicle from "./pages/userScreens/editScreens/EditVehicle";
 import AddVehicle from "./pages/userScreens/editScreens/AddVehicle";
 import EditMasterProfile from "./pages/masterScreens/editScreens/EditMasterProfile";
+import { requestLocationPermissions } from "./components/permissionlocation";
+
+import messaging from '@react-native-firebase/messaging';
+import { Alert } from 'react-native';
 
 const Stack = createStackNavigator();
 
@@ -71,7 +75,26 @@ const Stack = createStackNavigator();
 export default function App() {
   const [initialRoute, setInitialRoute] = useState(null);
   const navigationRef = useNavigationContainerRef();
+ 
+  useEffect(() => {
+  const unsubscribe = messaging().onMessage(async remoteMessage => {
+    Alert.alert('New Request', remoteMessage.notification?.body);
+    // You can navigate to request screen here if needed
+  });
 
+  return unsubscribe;
+}, []);
+
+  useEffect(() => {
+    // Request location permissions on app start
+    const requestPermissions = async () => {
+      const granted = await requestLocationPermissions();
+      if (!granted) {
+        console.warn("Location permissions not granted");
+      }
+    };
+    requestPermissions();
+  }, []);
 
 
   // Set initial route based on userData and role

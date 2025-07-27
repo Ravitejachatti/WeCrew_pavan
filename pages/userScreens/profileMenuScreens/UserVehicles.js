@@ -119,8 +119,11 @@ useEffect(() => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-      <Text style={styles.header}>My Vehicles</Text>
+      <View style={styles.headerContainer}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Ionicons name="arrow-back" size={24} color="#007BFF" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>My Vehicles</Text>
       </View>
       <FlatList
         data={vehicles}
@@ -154,6 +157,28 @@ useEffect(() => {
 }
 
 const styles = StyleSheet.create({
+  headerContainer: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  marginBottom: 18,
+  position: 'relative',
+},
+
+backButton: {
+  position: 'absolute',
+  left: 0,
+  padding: 8,
+  zIndex: 10,
+},
+
+headerTitle: {
+  flex: 1,
+  textAlign: 'center',
+  fontSize: 24,
+  fontWeight: 'bold',
+  color: "#007BFF",
+  letterSpacing: 0.5,
+},
   container: {
     flex: 1,
     padding: 16,

@@ -15,11 +15,26 @@ import { Picker } from '@react-native-picker/picker';
 import { useAuth } from '../../../contexts/AuthContext';
 import axios from 'axios';
 import { COLORS, SIZES, FONT_FAMILY, FONTS, API } from '../../../constants/constants';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const BASE_URL = `${API}`;
 
 const EditMasterProfile = ({ navigation }) => {
-  const { user, updateUser } = useAuth();
+  const { updateUser } = useAuth();
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const storedUserData = await AsyncStorage.getItem("userData");
+      if (storedUserData) {
+        setUser(JSON.parse(storedUserData));
+      }
+    };
+    fetchUserData();    
+  }, []);
+  
+
+  
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -30,6 +45,7 @@ const EditMasterProfile = ({ navigation }) => {
     bloodGroup: '',
     emergencyContactNumber: '',
   });
+  console.log('user', user);
 
   useEffect(() => {
     if (user) {
@@ -82,11 +98,14 @@ const EditMasterProfile = ({ navigation }) => {
         ...formData,
         dob: formData.dob ? new Date(formData.dob) : null,
       });
+      console.log('Profile update response:', response.data);
 
       if (response.status === 200) {
-        await updateUser(response.data.master);
+        // add the role master to the user data
+        response.data.role = 'master';
+        await updateUser(response.data.data);
         Alert.alert('Success', 'Profile updated successfully', [
-          { text: 'OK', onPress: () => navigation.goBack() }
+          { text: 'OK', onPress: () => navigation.goBack() } 
         ]);
       }
     } catch (error) {

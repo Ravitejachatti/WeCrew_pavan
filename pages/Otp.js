@@ -1,10 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Alert } from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { COLORS, SIZES, FONT_FAMILY, FONTS, API } from "../constants/constants";
+import { getFCMToken, requestFCMPermission } from '../components/firebaseSetup';
+
+
 
 export default function OTPScreen() {
   const route = useRoute();
@@ -24,19 +27,36 @@ export default function OTPScreen() {
     getPhone();
   }, []);
 
+  useEffect(() => {
+  const setupFCM = async () => {
+    await requestFCMPermission(); // 👈 First ask for permission
+  };
+
+  setupFCM();
+}, []);
+
   const handleVerifyOTP = async () => {
     if (otp.join("").length === 4) {
       try {
         console.log("verify the opt");
         setLoading(true);
         const response = await axios.post(`${BASE_URL}/login`, { phone: formattedPhone });
-        console.log("Response from server:", response);
+        
 
         if (response.data.message === "User found") {
           const user = response.data.user;
 
           await AsyncStorage.setItem('userData', JSON.stringify(user));
           console.log("User data saved to AsyncStorage:", user);
+
+            // ✅ Send FCM token to backend
+            const token = await getFCMToken();
+            if (token) {
+              await axios.post(`${BASE_URL}/notification/save-fcm-token`, {
+                userId: user._id,
+                fcmToken: token,
+              });
+            }
 
           // Navigate based on user role
           if (user.role === "user") {
@@ -62,8 +82,12 @@ export default function OTPScreen() {
         if(error.response && error.response.data.message == "User not found") {
           // if no user found, naviate to role selection
           // alert(error.response.data.message + ". Please select your role.");
-          alert("Mobile number does not exist Please Register ..")
-          navigation.navigate("roleSelection", { phone: formattedPhone });
+          Alert.alert(
+            "👋 Welcome!",
+            "It looks like you're new here.\nPlease register and choose your role to get started. 📝",
+            [{ text: "Got it", style: "default" }]
+          );
+          navigation.replace("roleSelection", { phone: formattedPhone });
         } else {
           console.error("Login Error:", error.response || error.message);
           alert("Something went wrong. Please try again.");

@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, ActivityIndicator, StyleSheet, Image } from "react-native";
+import { View, Text, FlatList, ActivityIndicator, StyleSheet, Image, TouchableOpacity } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 import { COLORS, SIZES, FONT_FAMILY, FONTS, API } from "../../../constants/constants";
 
 const BASE_URL = `${API}`; // Replace with your actual base URL
 
-const UserBookings = () => {
+const UserBookings = ({navigation}) => {
   const [userId, setUserId] = useState(null);
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -88,7 +89,12 @@ const UserBookings = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Your Bookings</Text>
+            <View style={styles.headerContainer}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Ionicons name="arrow-back" size={24} color="#007BFF" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>My Vehicles</Text>
+      </View>
       <FlatList
         data={bookings}
         keyExtractor={(_, idx) => idx.toString()}
@@ -101,6 +107,28 @@ const UserBookings = () => {
 };
 
 const styles = StyleSheet.create({
+    headerContainer: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  marginBottom: 18,
+  position: 'relative',
+},
+
+backButton: {
+  position: 'absolute',
+  left: 0,
+  padding: 8,
+  zIndex: 10,
+},
+
+headerTitle: {
+  flex: 1,
+  textAlign: 'center',
+  fontSize: 24,
+  fontWeight: 'bold',
+  color: "#007BFF",
+  letterSpacing: 0.5,
+},
   container: { flex: 1, backgroundColor: "#F9FAFB", padding: 16 },
   header: {
     fontSize: 22,

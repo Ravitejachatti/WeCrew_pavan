@@ -17,6 +17,7 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
+    console.log("Checking auth state...");
     checkAuthState();
   }, []);
 
@@ -27,6 +28,7 @@ export const AuthProvider = ({ children }) => {
       
       if (userData) {
         const parsedUser = JSON.parse(userData);
+        console.log("Found userData in AsyncStorage", parsedUser);
         setUser(parsedUser);
         setIsAuthenticated(true);
       } else if (userDataTemp) {
@@ -71,16 +73,10 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const updateUser = async (updatedUserData) => {
-    try {
-      const storageKey = user?.role === 'master' ? 'userData' : 'userData';
-      await AsyncStorage.setItem(storageKey, JSON.stringify(updatedUserData));
-      setUser(updatedUserData);
-    } catch (error) {
-      console.error('Error updating user:', error);
-      throw error;
-    }
-  };
+const updateUser = async (userData) => {
+  setUser(userData);
+  await AsyncStorage.setItem('userData', JSON.stringify(userData));
+};
 
   const value = {
     user,
@@ -94,7 +90,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider value={value}>
-      {children}
+      {!loading && children}
     </AuthContext.Provider>
   );
 };

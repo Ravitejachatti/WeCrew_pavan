@@ -5,9 +5,26 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import MasterBottomNavigator from "../../components/MasterBottomNavigator";
 import { useAuth } from "../../contexts/AuthContext";
 import { COLORS, SIZES, FONT_FAMILY, FONTS } from "../../constants/constants";
+import { use } from "react";
+
+
 
 const MasterProfileScreen = ({ navigation }) => {
-  const { user, logout } = useAuth();
+  // const { user, logout, loading } = useAuth();
+  // get user data from async storage
+  const {logout} = useAuth();
+  const [user, setUser] = useState(null); 
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const storedUserData = await AsyncStorage.getItem("userData");
+      if (storedUserData) {
+        setUser(JSON.parse(storedUserData));
+      }
+      console.log('Fetched user data:', storedUserData);
+    };
+    fetchUserData();
+  }, []);
+const [loading, setLoading] = useState(false);
 
   const handleLogout = async () => {
     Alert.alert(
@@ -30,6 +47,13 @@ const MasterProfileScreen = ({ navigation }) => {
       { cancelable: true }
     );
   };
+  if (loading) {
+  return (
+    <View style={styles.loadingContainer}>
+      <Text style={styles.loadingText}>Loading...</Text>
+    </View>
+  );
+}
 
   return (
     <View style={styles.container}>
@@ -92,7 +116,7 @@ const menuItems = [
 const styles = StyleSheet.create({
   container: { 
     flex: 1, 
-    backgroundColor: COLORS.background, 
+    backgroundColor: '#F5F7FA',
     paddingHorizontal: SIZES.padding, 
     paddingTop: SIZES.margin + 10 
   },
@@ -137,28 +161,48 @@ const styles = StyleSheet.create({
     marginTop: 2, 
     fontFamily: FONT_FAMILY.regular 
   },
-  menuContainer: { 
-    backgroundColor: COLORS.secondary, 
-    borderRadius: SIZES.borderRadius, 
-    paddingVertical: 5 
-  },
-  menuItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 15,
-    paddingHorizontal: SIZES.padding,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.border,
-  },
-  menuIcon: { 
-    marginRight: 15 
-  },
-  menuText: { 
-    flex: 1, 
-    fontSize: FONTS.medium, 
-    color: COLORS.textDark, 
-    fontFamily: FONT_FAMILY.bold 
-  },
+menuContainer: {
+  marginTop: 10,
+  gap: 12, // gap between cards
+},
+
+menuItem: {
+  flexDirection: "row",
+  alignItems: "center",
+  backgroundColor: "#fff",
+  borderRadius: 12,
+  paddingVertical: 14,
+  paddingHorizontal: 16,
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.1,
+  shadowRadius: 4,
+  // elevation: 2,
+},
+menuIcon: {
+  marginRight: 14,
+  width: 24,
+  textAlign: "center",
+},
+
+menuText: {
+  flex: 1,
+  fontSize: FONTS.medium,
+  color: COLORS.textDark,
+  fontFamily: FONT_FAMILY.bold,
+},
+
+loadingContainer: {
+  flex: 1,
+  justifyContent: "center",
+  alignItems: "center",
+  backgroundColor: '#F5F7FA',
+},
+loadingText: {
+  fontSize: 16,
+  fontFamily: FONT_FAMILY.regular,
+  color: COLORS.text,
+},
 });
 
 export default MasterProfileScreen;

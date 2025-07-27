@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1037877959378",
+    "firebase_url": "https://learnelevate-1db86-default-rtdb.firebaseio.com",
+    "project_id": "learnelevate-1db86",
+    "storage_bucket": "learnelevate-1db86.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1037877959378:android:c7e1b44b9889fefe396b0b",
+        "android_client_info": {
+          "package_name": "com.WeCrew"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1037877959378-fut4nv8ldkokodndv0j22f805d52d0jv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMRG4NpD4zYxnWK-89yO9k4rnThHyldp8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1037877959378-fut4nv8ldkokodndv0j22f805d52d0jv.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1037877959378-k4vb1rr0npb0q72aoariu66pihg3ktpo.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.grs.learnElevate"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

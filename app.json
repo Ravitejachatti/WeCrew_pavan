@@ -14,21 +14,21 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.pavan1113.WeCrew"
+      "bundleIdentifier": "com.WeCrew"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/Wecrew_logo.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.pavan1113.WeCrew"
+      "package": "com.WeCrew"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "b845f726-7bdb-4fff-b772-648c91e2f150"
+        "projectId": "fb48f77d-0447-4bcb-9e5f-95920fd259ac"
       }
     }
   }

@@ -15,6 +15,7 @@ import { useAuth } from '../../../contexts/AuthContext';
 import axios from 'axios';
 import { COLORS, SIZES, FONT_FAMILY, FONTS, API } from '../../../constants/constants';
 import { use } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const BASE_URL = `${API}`;
@@ -44,16 +45,16 @@ const EditUserProfile = ({ navigation }) => {
   }, []);
 
   useEffect(() => {
-    if (user) {
+    if (userData) {
       setFormData({
-        name: user.name || userData?.name || '',
-        email: user.email || userData?.email || '',
-        phone: user.phone || userData?.phone || '',
-        gender: user.gender || userData?.gender || '',
-        dob: user.dob ? new Date(user.dob).toISOString().split('T')[0] : '',
+        name:  userData?.name || '',
+        email:  userData?.email || '',
+        phone:  userData?.phone || '',
+        gender:  userData?.gender || '',
+        dob: userData.dob ? new Date(userData.dob).toISOString().split('T')[0] : '',
       });
     }
-  }, [user]);
+  }, [userData]);
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({
@@ -84,7 +85,7 @@ const EditUserProfile = ({ navigation }) => {
 
     setLoading(true);
     try {
-      const response = await axios.put(`${BASE_URL}/user/${user._id}`, {
+      const response = await axios.put(`${BASE_URL}/user/${userData._id}`, {
         ...formData,
         dob: formData.dob ? new Date(formData.dob) : null,
       });
