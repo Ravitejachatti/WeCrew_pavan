@@ -4,6 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 import { COLORS, SIZES, FONT_FAMILY, FONTS, API } from "../../../constants/constants";
+import LoadingBars from "../../../components/reuableComponents/loadingBars";
 
 const BASE_URL = `${API}`; // Replace with your actual base URL
 
@@ -69,7 +70,7 @@ const UserBookings = ({navigation}) => {
   if (loading) {
     return (
       <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#007BFF" />
+        <LoadingBars color={COLORS.primary} size={36} />
         <Text style={{ color: "#007BFF", marginTop: 10 }}>Loading your bookings...</Text>
       </View>
     );

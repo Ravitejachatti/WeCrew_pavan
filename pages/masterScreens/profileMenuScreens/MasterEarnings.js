@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, StyleSheet, ActivityIndicator, Image } from "react-native";
+import { View, Text, FlatList, StyleSheet, ActivityIndicator, Image, SafeAreaView, TouchableOpacity } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { COLORS, SIZES, FONT_FAMILY, FONTS } from "../../../constants/constants";
+import LoadingBars from "../../../components/reuableComponents/loadingBars";
+import { Ionicons } from '@expo/vector-icons';
+import {  useNavigation } from "@react-navigation/native";
+
 
 export default function MasterEarnings() {
+  const navigation = useNavigation(); 
   const [completed, setCompleted] = useState([]);
   const [loading, setLoading] = useState(true);
   
@@ -60,14 +65,26 @@ export default function MasterEarnings() {
   if (loading) {
     return (
       <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#007BFF" />
+        <LoadingBars color={COLORS.primary} size={36} />
         <Text style={{ color: "#007BFF", marginTop: 10 }}>Loading earnings...</Text>
       </View>
     );
   }
 
-  if (!completed.length) {
-    return (
+
+
+  return (
+<SafeAreaView style={styles.container}>
+    <TouchableOpacity onPress={navigation.goBack} style={styles.backArrow}>
+      <Ionicons name="arrow-back" size={24} color={COLORS.textDark} />
+    </TouchableOpacity>
+
+    {loading ? (
+      <View style={styles.centered}>
+        <LoadingBars color={COLORS.primary} size={36} />
+        <Text style={{ color: "#007BFF", marginTop: 10 }}>Loading earnings...</Text>
+      </View>
+    ) : completed.length === 0 ? (
       <View style={styles.centered}>
         <Image
           source={{ uri: "https://cdn-icons-png.flaticon.com/512/4076/4076500.png" }}
@@ -75,20 +92,19 @@ export default function MasterEarnings() {
         />
         <Text style={styles.emptyText}>No completed repairs yet.</Text>
       </View>
-    );
-  }
-
-  return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Earnings History</Text>
-      <FlatList
-        data={completed}
-        keyExtractor={(_, idx) => idx.toString()}
-        renderItem={renderItem}
-        contentContainerStyle={{ paddingBottom: 30 }}
-        showsVerticalScrollIndicator={false}
-      />
-    </View>
+    ) : (
+      <>
+        <Text style={styles.header}>Earnings History</Text>
+        <FlatList
+          data={completed}
+          keyExtractor={(_, idx) => idx.toString()}
+          renderItem={renderItem}
+          contentContainerStyle={{ paddingBottom: 30 }}
+          showsVerticalScrollIndicator={false}
+        />
+      </>
+    )}
+  </SafeAreaView>
   );
 }
 
@@ -175,4 +191,11 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontFamily: FONT_FAMILY.bold,
   },
+backArrow: {
+  position: 'absolute',
+  top: 10, // or use useSafeAreaInsets().top + 10 if available
+  left: 16,
+  zIndex: 10,
+  padding: 8,
+},
 });

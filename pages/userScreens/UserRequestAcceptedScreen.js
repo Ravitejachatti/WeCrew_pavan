@@ -6,6 +6,7 @@ import UserBottomNavigator from "../../components/UserBottomNavigator";
 import { getDatabase, ref, get } from "firebase/database";
 import axios from "axios";
 import { COLORS, SIZES, FONT_FAMILY, FONTS, API } from "../../constants/constants";
+import LoadingBars from "../../components/reuableComponents/loadingBars";
 
 const UserRequestAcceptedScreen = ({ navigation }) => {
   const [request, setRequest] = useState(null);
@@ -58,7 +59,7 @@ const UserRequestAcceptedScreen = ({ navigation }) => {
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" color="#007BFF" />
+        <LoadingBars color={COLORS.primary} size={36} />
       </View>
     );
   }

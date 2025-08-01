@@ -6,6 +6,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { COLORS, SIZES, FONT_FAMILY, FONTS, API } from "../constants/constants";
 import { getFCMToken, requestFCMPermission } from '../components/firebaseSetup';
+import { useAuth } from '../contexts/AuthContext';
+import LoadingBars from "../components/reuableComponents/loadingBars";
 
 
 
@@ -18,6 +20,7 @@ export default function OTPScreen() {
   const BASE_URL = `${API}`; 
   const formattedPhone = phone.replace("+", "");
   const [loading, setLoading] = useState(false);
+  const { login, authLoading } = useAuth();
   // Fetch phone number from AsyncStorage
   useEffect(() => {
     const getPhone = async () => {
@@ -46,11 +49,15 @@ export default function OTPScreen() {
         if (response.data.message === "User found") {
           const user = response.data.user;
 
-          await AsyncStorage.setItem('userData', JSON.stringify(user));
-          console.log("User data saved to AsyncStorage:", user);
+          await login(user)
+
+          // await AsyncStorage.setItem('userData', JSON.stringify(user));
+          // console.log("User data saved to AsyncStorage:", user);
+          // console.log(user)
 
             // ✅ Send FCM token to backend
             const token = await getFCMToken();
+            console.log("fetching fcmtoken ",token)
             if (token) {
               await axios.post(`${BASE_URL}/notification/save-fcm-token`, {
                 userId: user._id,
@@ -152,16 +159,18 @@ export default function OTPScreen() {
           Haven't received the code? <Text style={styles.resendLink}>Resend</Text>
         </Text>
 
-        <TouchableOpacity style={styles.button} onPress={handleVerifyOTP} disabled={loading}>
+      <TouchableOpacity
+        style={[styles.button, (loading || authLoading) && { opacity: 0.6 }]}
+        onPress={handleVerifyOTP}
+        disabled={loading || authLoading}
+      >
+        {(loading || authLoading) ? (
+          <ActivityIndicator color={COLORS.secondary} />
+        ) : (
           <Text style={styles.buttonText}>Verify OTP</Text>
-        </TouchableOpacity>
-
-        {loading && (
-          <View style={{ marginTop: 20 }}>
-            <ActivityIndicator size="large" color="#007BFF" />
-            <Text style={{ color: "#007BFF", marginTop: 8, textAlign: "center" }}>Verifying...</Text>
-          </View>
         )}
+      </TouchableOpacity>
+
       </View>
     </SafeAreaView>
   );

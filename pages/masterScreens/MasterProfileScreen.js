@@ -6,13 +6,14 @@ import MasterBottomNavigator from "../../components/MasterBottomNavigator";
 import { useAuth } from "../../contexts/AuthContext";
 import { COLORS, SIZES, FONT_FAMILY, FONTS } from "../../constants/constants";
 import { use } from "react";
+import LoadingBars from "../../components/reuableComponents/loadingBars";
 
 
 
 const MasterProfileScreen = ({ navigation }) => {
   // const { user, logout, loading } = useAuth();
   // get user data from async storage
-  const {logout} = useAuth();
+  const {logout, authLoading} = useAuth();
   const [user, setUser] = useState(null); 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -26,30 +27,27 @@ const MasterProfileScreen = ({ navigation }) => {
   }, []);
 const [loading, setLoading] = useState(false);
 
-  const handleLogout = async () => {
-    Alert.alert(
-      "Logout",
-      "Are you sure you want to logout?",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Logout",
-          style: "destructive",
-          onPress: () => {
-            logout();
-            navigation.reset({
-              index: 0,
-              routes: [{ name: "Login" }],
-            });
-          },
-        },
-      ],
-      { cancelable: true }
-    );
-  };
+const handleLogout = () => {
+  Alert.alert(
+    "Logout",
+    "Are you sure you want to logout?",
+    [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Logout",
+        style: "destructive",
+        onPress: logout, // 🟢 No navigation.reset
+      },
+    ],
+    { cancelable: true }
+  );
+};
+
+
   if (loading) {
   return (
     <View style={styles.loadingContainer}>
+      <LoadingBars color={COLORS.primary} size={36} />
       <Text style={styles.loadingText}>Loading...</Text>
     </View>
   );
@@ -70,7 +68,7 @@ const [loading, setLoading] = useState(false);
           style={styles.profileImage}
         />
         <Text style={styles.profileName}>{user?.name || "User"}</Text>
-        <Text style={styles.profileEmail}>{user?.email || ""}</Text>
+    
         <Text style={styles.profilePhone}>
           {user?.phone ? `+${user.phone}` : ""}
         </Text>
@@ -93,9 +91,9 @@ const [loading, setLoading] = useState(false);
           </TouchableOpacity>
         ))}
         {/* Logout Option */}
-        <TouchableOpacity style={styles.menuItem} onPress={handleLogout}>
+        <TouchableOpacity style={styles.menuItem} onPress={handleLogout} disabled={authLoading}>
           <FontAwesome5 name="sign-out-alt" size={18} color="#e74c3c" style={styles.menuIcon} />
-          <Text style={[styles.menuText, { color: "#e74c3c" }]}>Logout</Text>
+          <Text style={[styles.menuText, { color: "#e74c3c" }]}>{authLoading ? 'logging out': 'logout'}</Text>
         </TouchableOpacity>
       </View>
       <MasterBottomNavigator />

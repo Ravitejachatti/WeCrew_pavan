@@ -15,6 +15,7 @@ import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { COLORS, SIZES, FONT_FAMILY, FONTS, API } from '../../../constants/constants';
+import LoadingBars from '../../../components/reuableComponents/loadingBars';
 
 const BASE_URL = `${API}`;
 
@@ -166,7 +167,7 @@ const AddVehicle = ({ navigation }) => {
           disabled={loading}
         >
           {loading ? (
-            <ActivityIndicator color={COLORS.secondary} />
+            <LoadingBars color={COLORS.primary} size={36} />
           ) : (
             <Text style={styles.saveButtonText}>Add Vehicle</Text>
           )}

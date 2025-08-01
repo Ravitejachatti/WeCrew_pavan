@@ -5,6 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { COLORS, SIZES, FONT_FAMILY, FONTS, API } from "../../constants/constants";
+import { useAuth } from "../../contexts/AuthContext";
 
 const bikeModels = {
    "Aprilia": [
@@ -237,6 +238,7 @@ const bikeModels = {
 };
 
 export default function BikeModelScreen() {
+  const { login, authLoading} = useAuth()
   const navigation = useNavigation();
   const route = useRoute();
   const { selectedBrand } = route.params;
@@ -250,7 +252,7 @@ export default function BikeModelScreen() {
     }
   
     try {
-      const storedUser = await AsyncStorage.getItem('userData');
+      const storedUser = await AsyncStorage.getItem('CustomerData');
   
       if (!storedUser) {
         console.error('No user data found in storage');
@@ -283,8 +285,10 @@ export default function BikeModelScreen() {
         const vehicleDetails = response?.data?.data; // This is the array of vehicles
         console.log('response.data ', response.data);
         await AsyncStorage.setItem("UserVehicleDetails", JSON.stringify(vehicleDetails));
-        alert("Vehicle details saved successfully!");
-        navigation.navigate('UserHome');
+        const Customer = await AsyncStorage.getItem('CustomerData')
+        console.log(Customer)
+        await login(JSON.parse(Customer)); 
+          
       } else {
         console.error('Failed to upload vehicle details:', response.data);
         alert("Failed to save vehicle details");
@@ -332,8 +336,8 @@ export default function BikeModelScreen() {
                 Note: Your data is safe and securely protected with us, ensuring privacy and confidentiality.
               </Text>
 
-              <TouchableOpacity style={styles.button} onPress={handleNext}>
-                <Text style={styles.buttonText}>Submit</Text>
+              <TouchableOpacity style={styles.button} onPress={handleNext} disabled={ authLoading|| loading}>
+                <Text style={styles.buttonText}>{( authLoading || loading )? 'Please Wait ..' : 'Submit'}</Text>
               </TouchableOpacity>
             </View>
       </View>

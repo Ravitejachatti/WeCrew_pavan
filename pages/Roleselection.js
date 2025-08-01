@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { COLORS, SIZES, FONT_FAMILY, FONTS } from "../constants/constants";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function RoleSelectionScreen() {
   const route = useRoute();
@@ -9,12 +10,13 @@ export default function RoleSelectionScreen() {
   const { phone } = route.params || {}; // Get phone number from params if available
   const [selectedRole, setSelectedRole] = useState(null);
 
-  const handleRoleSelection = (role) => {
+  const handleRoleSelection = async (role) => {
     setSelectedRole(role);
+    await AsyncStorage.setItem("userRole", role); // ✅ Correct value
   };
 
   const handleNext = () => {
-    if (selectedRole === "Customer") {
+    if (selectedRole === "user") {
       navigation.navigate("BasicDetails", { selectedRole, phone });
     } else if (selectedRole === "Master") {
       navigation.navigate("masterDetails", { selectedRole, phone });
@@ -32,8 +34,8 @@ export default function RoleSelectionScreen() {
 
       <View style={styles.roleContainer}>
         <TouchableOpacity
-          style={[styles.roleButton, selectedRole === "Customer" && styles.selectedRole]}
-          onPress={() => handleRoleSelection("Customer")}
+          style={[styles.roleButton, selectedRole === "user" && styles.selectedRole]}
+          onPress={() => handleRoleSelection("user")}
         >
           <Text style={styles.roleText}>Customer</Text>
         </TouchableOpacity>

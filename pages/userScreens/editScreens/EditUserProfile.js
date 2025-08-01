@@ -16,6 +16,7 @@ import axios from 'axios';
 import { COLORS, SIZES, FONT_FAMILY, FONTS, API } from '../../../constants/constants';
 import { use } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import LoadingBars from '../../../components/reuableComponents/loadingBars';
 
 
 const BASE_URL = `${API}`;
@@ -197,7 +198,7 @@ const EditUserProfile = ({ navigation }) => {
           disabled={loading}
         >
           {loading ? (
-            <ActivityIndicator color={COLORS.secondary} />
+            <LoadingBars color={COLORS.primary} size={36} />
           ) : (
             <Text style={styles.saveButtonText}>Save Changes</Text>
           )}

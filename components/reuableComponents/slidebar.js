@@ -116,12 +116,14 @@ const styles = StyleSheet.create({
   arrowIcon: {
     position: 'absolute',
     right: 20,
-    top: 12,
+    alignItems:'center',
+    // top: 10,
   },
   leftArrowIcon: {
     position: 'absolute',
     left: 20,
-    top: 10,
+    alignItems:'center',
+    // top: 10,
   },
   slider: {
     position: 'absolute',

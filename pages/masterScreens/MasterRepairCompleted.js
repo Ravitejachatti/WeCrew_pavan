@@ -16,6 +16,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Linking } from 'react-native';
 import { COLORS, SIZES, FONT_FAMILY, FONTS, API } from "../../constants/constants";
 import axios from 'axios';
+import LoadingBars from '../../components/reuableComponents/loadingBars';
 
 const { width, height } = Dimensions.get('window');
 
@@ -127,7 +128,7 @@ const MasterRepairCompleted = ({ navigation }) => {
   if (initialLoading) {
     return (
       <SafeAreaView style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
-        <ActivityIndicator size="large" color="#007bff" />
+        <LoadingBars color={COLORS.primary} size={36} />
         <Text style={{ marginTop: 10 }}>Loading request details...</Text>
       </SafeAreaView>
     );
@@ -232,7 +233,7 @@ const MasterRepairCompleted = ({ navigation }) => {
             <View style={styles.slideContainer}>
               {loading ? (
                 <View style={styles.loadingContainer}>
-                  <ActivityIndicator size="small" color="#b00020" />
+                  <LoadingBars color={COLORS.primary} size={36} />
                   <Text style={styles.loadingText}>Completing repair...</Text>
                 </View>
               ) : (

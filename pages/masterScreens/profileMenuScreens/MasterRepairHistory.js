@@ -8,9 +8,13 @@ import {
   ActivityIndicator,
   Image,
   ScrollView,
+  SafeAreaView
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { COLORS, SIZES, FONT_FAMILY, FONTS } from "../../../constants/constants";
+import LoadingBars from "../../../components/reuableComponents/loadingBars";
+import { useNavigation } from "@react-navigation/core";
+import { Ionicons } from '@expo/vector-icons';
 
 const TABS = [
   { key: "completed", label: "Completed" },
@@ -19,6 +23,7 @@ const TABS = [
 ];
 
 export default function MasterRepairHistory() {
+  const navigation = useNavigation()
   const [selectedTab, setSelectedTab] = useState("completed");
   const [history, setHistory] = useState({ completed: [], cancelled: [], missed: [] });
   const [loading, setLoading] = useState(true);
@@ -101,7 +106,7 @@ export default function MasterRepairHistory() {
     if (loading) {
       return (
         <View style={styles.centered}>
-          <ActivityIndicator size="large" color="#007BFF" />
+          <LoadingBars color={COLORS.primary} size={36} />
           <Text style={{ color: "#007BFF", marginTop: 10 }}>Loading...</Text>
         </View>
       );
@@ -135,7 +140,12 @@ export default function MasterRepairHistory() {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <TouchableOpacity onPress={navigation.goBack} style={styles.backArrow}>
+        <Ionicons name="arrow-back" size={24} color={COLORS.textDark}/>
+      </TouchableOpacity>
+       
+
       <Text style={styles.header}>Repair History</Text>
       <View style={styles.tabBar}>
         {TABS.map((tab) => (
@@ -159,7 +169,7 @@ export default function MasterRepairHistory() {
         ))}
       </View>
       <View style={{ flex: 1 }}>{renderList()}</View>
-    </View>
+    </SafeAreaView>
   );
 }
 

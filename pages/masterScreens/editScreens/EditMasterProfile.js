@@ -16,6 +16,7 @@ import { useAuth } from '../../../contexts/AuthContext';
 import axios from 'axios';
 import { COLORS, SIZES, FONT_FAMILY, FONTS, API } from '../../../constants/constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import LoadingBars from '../../../components/reuableComponents/loadingBars';
 
 const BASE_URL = `${API}`;
 
@@ -138,18 +139,6 @@ const EditMasterProfile = ({ navigation }) => {
             />
           </View>
 
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>Email *</Text>
-            <TextInput
-              style={styles.input}
-              value={formData.email}
-              onChangeText={(value) => handleInputChange('email', value)}
-              placeholder="Enter your email"
-              placeholderTextColor={COLORS.textLight}
-              keyboardType="email-address"
-              autoCapitalize="none"
-            />
-          </View>
 
           <View style={styles.inputContainer}>
             <Text style={styles.label}>Phone</Text>
@@ -186,16 +175,6 @@ const EditMasterProfile = ({ navigation }) => {
             </View>
           </View>
 
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>Date of Birth</Text>
-            <TextInput
-              style={styles.input}
-              value={formData.dob}
-              onChangeText={(value) => handleInputChange('dob', value)}
-              placeholder="YYYY-MM-DD"
-              placeholderTextColor={COLORS.textLight}
-            />
-          </View>
 
           <View style={styles.inputContainer}>
             <Text style={styles.label}>Blood Group</Text>
@@ -240,7 +219,7 @@ const EditMasterProfile = ({ navigation }) => {
           disabled={loading}
         >
           {loading ? (
-            <ActivityIndicator color={COLORS.secondary} />
+            <LoadingBars color={COLORS.primary} size={36} />
           ) : (
             <Text style={styles.saveButtonText}>Save Changes</Text>
           )}

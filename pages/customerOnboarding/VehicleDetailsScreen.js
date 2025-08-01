@@ -35,7 +35,7 @@ export default function BasicDetailsScreen() {
   // const { email, dob, gender } = route.params; // Receiving data from the first screen
 
   const handleNext = () => {
-    navigation.navigate("BikeBrand", { vehicleNo, selectedVehicle, selectVehicleType });
+    navigation.navigate("VehicleBrand", { vehicleNo, selectedVehicle, selectVehicleType });
   };
 
   return (

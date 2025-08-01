@@ -9,6 +9,7 @@ import {
 import { getDatabase, ref, get } from "firebase/database";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
+import LoadingBars from "./reuableComponents/loadingBars";
 
 const MasterOngoingRequestCard = () => {
   const navigation = useNavigation();
@@ -66,7 +67,7 @@ const MasterOngoingRequestCard = () => {
   if (loading) {
     return (
       <View style={styles.card}>
-        <ActivityIndicator size="small" color="#000" />
+        <LoadingBars color={COLORS.primary} size={36} />
         <Text style={styles.text}>Checking ongoing request...</Text>
       </View>
     );

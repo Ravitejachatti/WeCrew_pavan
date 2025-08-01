@@ -8,6 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Location from 'expo-location';
 import axios from 'axios';
 import { COLORS, SIZES, FONT_FAMILY, FONTS, API } from "../../constants/constants";
+import LoadingBars from '../../components/reuableComponents/loadingBars';
 
 const BASE_URL = `${API}`;
 
@@ -217,7 +218,7 @@ useEffect(() => {
   if (loading) {
     return (
       <View style={styles.container}>
-        <ActivityIndicator size="large" color="#007BFF" />
+        <LoadingBars color={COLORS.primary} size={36} />
       </View>
     );
   }
@@ -332,14 +333,8 @@ useEffect(() => {
 
       {/* Loading indicator for submit */}
       {submitLoading && (
-        <View style={{
-          ...StyleSheet.absoluteFillObject,
-          backgroundColor: 'rgba(0,0,0,0.2)',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 1000
-        }}>
-          <ActivityIndicator size="large" color="#007BFF" />
+          <View>
+            <LoadingBars color={COLORS.primary} size={36} />
         </View>
       )}
 

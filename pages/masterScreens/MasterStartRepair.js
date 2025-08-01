@@ -16,6 +16,7 @@ import { Linking } from 'react-native';
 import axios from 'axios';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SIZES, FONT_FAMILY, FONTS, API } from "../../constants/constants";
+import LoadingBars from '../../components/reuableComponents/loadingBars';
 
 const { width, height } = Dimensions.get('window');
 const BASE_URL = `${API}`; // Replace with your actual base URL
@@ -90,7 +91,7 @@ const MasterStartRepair = ({ navigation }) => {
   if (loading) {
     return (
       <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
-        <ActivityIndicator size="large" color="#007bff" />
+        <LoadingBars color={COLORS.primary} size={36} />
         <Text>Loading request details...</Text>
       </View>
     );

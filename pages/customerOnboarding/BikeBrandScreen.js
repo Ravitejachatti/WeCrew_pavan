@@ -32,7 +32,7 @@ export default function BikeBrandScreen() {
       alert("Please select a brand");
       return;
     }
-    navigation.navigate("BikeModel", { ...route.params, selectedBrand });
+    navigation.navigate("VehicleModals", { ...route.params, selectedBrand });
   };
 
   return (

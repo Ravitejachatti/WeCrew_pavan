@@ -8,7 +8,7 @@ import { COLORS, SIZES, FONT_FAMILY, FONTS } from "../../constants/constants";
 
 
 const UserProfileScreen = ({ navigation }) => {
-  const { user, logout } = useAuth();
+  const { user, logout, authLoading } = useAuth();
   // user details from the async storage
   const [userData, setUserData] = useState(null);
   useEffect(() => {
@@ -21,27 +21,21 @@ const UserProfileScreen = ({ navigation }) => {
     fetchUserData();
   }, []);
 
-  const handleLogout = async () => {
-    Alert.alert(
-      "Logout",
-      "Are you sure you want to logout?",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Logout",
-          style: "destructive",
-          onPress: () => {
-            logout();
-            navigation.reset({
-              index: 0,
-              routes: [{ name: "Login" }],
-            });
-          },
-        },
-      ],
-      { cancelable: true }
-    );
-  };
+const handleLogout = () => {
+  Alert.alert(
+    "Logout",
+    "Are you sure you want to logout?",
+    [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Logout",
+        style: "destructive",
+        onPress: logout, // 🟢 No navigation.reset
+      },
+    ],
+    { cancelable: true }
+  );
+};
 
   return (
     <View style={styles.container}>
@@ -81,9 +75,9 @@ const UserProfileScreen = ({ navigation }) => {
           </TouchableOpacity>
         ))}
         {/* Logout Option */}
-        <TouchableOpacity style={styles.menuItem} onPress={handleLogout}>
+        <TouchableOpacity style={styles.menuItem} onPress={handleLogout} disabled={authLoading}>
           <FontAwesome5 name="sign-out-alt" size={18} color="#e74c3c" style={styles.menuIcon} />
-          <Text style={[styles.menuText, { color: "#e74c3c" }]}>Logout</Text>
+          <Text style={[styles.menuText, { color: "#e74c3c" }]}>{authLoading? "logging out" : "logout"}</Text>
         </TouchableOpacity>
       </View>
       <UserBottomNavigator />

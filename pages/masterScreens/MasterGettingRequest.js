@@ -1,117 +1,72 @@
-import React, { useEffect, useRef, useState } from 'react';
+// ✅ MasterGettingRequest.js (with top-right countdown, red animation in last 5 seconds)
+
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   Dimensions,
   Alert,
+  Animated,
+  NativeModules
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Audio } from 'expo-av';
 import { BlurView } from 'expo-blur';
 import SlideToConfirm from '../../components/reuableComponents/slidebar';
 import axios from 'axios';
 import { COLORS, SIZES, FONT_FAMILY, FONTS, API } from "../../constants/constants";
+import { useRequest } from '../../contexts/RequestContext';
+const { SoundControl } = NativeModules;
 
 const { width } = Dimensions.get('window');
-const BASE_URL = `${API}`; // Ensure API is defined in constants
+const BASE_URL = `${API}`;
 
-const MasterGettingRequest = ({ request, onDismiss, navigation }) => {
-  // Extract the actual request object if wrapped in a key
-  const actualRequest =
-    request &&
-    typeof request === "object" &&
-    !Array.isArray(request) &&
-    Object.keys(request).length === 1
-      ? Object.values(request)[0]
-      : request;
+const MasterGettingRequest = ({ navigation }) => {
+  const { incomingRequest: request, hideRequest, countdown } = useRequest();
+  const [fadeAnim] = useState(new Animated.Value(1));
 
-  const [timer, setTimer] = useState(60);
-  const [actionLoading, setActionLoading] = useState(false);
-  const isMounted = useRef(true);
-  const soundRef = useRef(null);
+const actualRequest = request || {};
 
   useEffect(() => {
-  isMounted.current = true;
-
-  return () => {
-    isMounted.current = false; // cleanup flag
-  };
-}, []);
-
-  useEffect(() => {
-  const playSound = async () => {
-    try {
-      const { sound } = await Audio.Sound.createAsync(
-        require('../../assets/alert.mp3'),
-        { isLooping: true }
-      );
-      soundRef.current = sound;
-      await sound.playAsync();
-    } catch (error) {
-      console.warn('Failed to play sound:', error);
+    if (countdown <= 5) {
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(fadeAnim, {
+            toValue: 0.3,
+            duration: 500,
+            useNativeDriver: true,
+          }),
+          Animated.timing(fadeAnim, {
+            toValue: 1,
+            duration: 500,
+            useNativeDriver: true,
+          }),
+        ])
+      ).start();
     }
-  };
-
-  playSound();
-
-  const interval = setInterval(() => {
-    setTimer(prev => {
-      if (prev <= 1) {
-        clearInterval(interval);
-        stopSound();   // stop sound after timeout
-        onDismiss?.();
-        return 0;
-      }
-      return prev - 1;
-    });
-  }, 1000);
-
-  // Cleanup when component unmounts
-  return () => {
-    clearInterval(interval);
-    stopSound();     // stop sound if component unmounts early
-  };
-}, []);
-
-
-const stopSound = async () => {
-  if (soundRef.current) {
-    try {
-      await soundRef.current.stopAsync();
-      await soundRef.current.unloadAsync();
-    } catch (e) {
-      console.warn('Failed to stop or unload sound:', e);
-    }
-    soundRef.current = null;
-  }
-};
+  }, [countdown]);
 
   const handleAccept = async () => {
-    if (actionLoading) return;
-    setActionLoading(true);
-    await stopSound();
-
     try {
       const userData = await AsyncStorage.getItem('userData');
       const parsedData = JSON.parse(userData);
       const masterId = parsedData?._id;
+      SoundControl.stopSound();
       if (!masterId || !actualRequest?.requestId) {
         Alert.alert('Error', 'Master ID or Request ID is missing.');
         return;
       }
-
+      
+       
       const response = await axios.patch(
-        `${BASE_URL}/request/${actualRequest.requestId}/assign`,
+        `${BASE_URL}/request/${actualRequest?.requestId}/assign`,
         { masterId }
       );
 
       if (response.status === 200) {
-        if (!isMounted.current) return;
-
         await AsyncStorage.setItem('AcceptedRequest', JSON.stringify(actualRequest));
         Alert.alert('Success', 'Request has been successfully assigned.');
-        onDismiss?.();
+        hideRequest?.();
         setTimeout(() => {
           navigation.navigate('MasterRequestAccepted');
         }, 100);
@@ -120,202 +75,214 @@ const stopSound = async () => {
       }
     } catch (error) {
       Alert.alert('Error', 'An error occurred while assigning the request.');
-    } finally {
-      if (isMounted.current) setActionLoading(false);
     }
   };
 
   const handleReject = async () => {
-    if (actionLoading) return;
-    setActionLoading(true);
-    await stopSound();
-
     try {
       const userData = await AsyncStorage.getItem('userData');
       const parsedData = JSON.parse(userData);
       const masterId = parsedData?._id;
-
+      SoundControl.stopSound();
       if (!masterId || !actualRequest?.requestId) {
         Alert.alert('Error', 'Master ID or Request ID is missing.');
         return;
       }
-
+      
       const response = await axios.patch(
-        `${BASE_URL}/request/${actualRequest.requestId}/cancelled-master`,
+        `${BASE_URL}/request/${actualRequest?.requestId}/cancelled-master`,
         { masterId }
       );
 
       if (response.status === 200) {
-        if (!isMounted.current) return;
         Alert.alert('Success', 'Request has been successfully rejected.');
-        onDismiss?.();
+        hideRequest?.();
       } else {
         Alert.alert('Error', 'Failed to reject the request.');
       }
     } catch (error) {
       Alert.alert('Error', 'An error occurred while rejecting the request.');
-    } finally {
-      if (isMounted.current) setActionLoading(false);
     }
   };
 
-  if (!actualRequest) {
-    Alert.alert('Error', 'No request details available.');
-    onDismiss?.();
-    return null;
-  }
+  if (!actualRequest) return null;
 
   return (
     <View style={StyleSheet.absoluteFill}>
-      <BlurView intensity={50} tint="light" style={StyleSheet.absoluteFill} />
-      <View style={styles.modalContainer}>
-        <View style={styles.card}>
-          <Text style={styles.timer}>
-            Grab Your Booking Within <Text style={styles.timerCircle}>{timer}s</Text>
-          </Text>
+      <BlurView intensity={60} tint="light" style={StyleSheet.absoluteFill} />
 
-          <View style={styles.section}>
-            <Text style={styles.label}>Repair Point</Text>
-            <Text style={styles.title}>{actualRequest.location?.address || 'Unknown Location'}</Text>
-            <Text style={styles.link}>{`${actualRequest.distanceKm} KM` || 'Unknown Distance'} | Directions</Text>
-          </View>
-
-          <View style={styles.row}>
-            <View>
-              <Text style={styles.label}>Service Requested</Text>
-              <Text style={styles.value}>{actualRequest.serviceType || 'Unknown Service'}</Text>
-            </View>
-            <View>
-              <Text style={styles.label}>Customer Name</Text>
-              <Text style={styles.value}>{actualRequest.user?.name?.trim() || 'Unknown Name'}</Text>
+      <View style={styles.container}>
+        {/* Header + Countdown */}
+          <View style={styles.topHeader}>
+            <Text style={styles.headerText}>Grab Your Booking Within</Text>
+            <View style={styles.countdownCircle}>
+              <Animated.Text
+                style={[
+                  styles.countdownText,
+                  countdown <= 5 && { color: '#FF3B30' },
+                  { opacity: countdown <= 5 ? fadeAnim : 1 },
+                ]}
+              >
+                {countdown}
+              </Animated.Text>
             </View>
           </View>
 
-          <View style={styles.row}>
-            <View>
-              <Text style={styles.label}>Vehicle Number</Text>
-              <Text style={styles.value}>{actualRequest.user?.vehicleNumber || 'Unknown Number'}</Text>
+          {/* Card */}
+          <View style={styles.card}>
+            <View style={styles.cardTitle}>
+              <Text style={styles.sectionTitle}>🔘 Repair Point</Text>
+              <Text style={styles.linkText}>Directions</Text>
             </View>
-            <View>
-              <Text style={styles.label}>Vehicle Model</Text>
-              <Text style={styles.value}>{actualRequest.user?.vehicleModel || 'Unknown Model'}</Text>
+            
+            <Text style={styles.boldText}>Dwarka Nagar</Text>
+            <Text style={styles.descriptionText}>
+              {actualRequest?.location?.address}
+            </Text>
+            <Text style={styles.directionText}>
+              {actualRequest?.distanceKm} KM 
+            </Text>
+
+            <View style={styles.row}>
+              <View>
+                <Text style={styles.label}>Service Requested</Text>
+                <Text style={styles.value}>{actualRequest?.serviceType}</Text>
+              </View>
+              <View>
+                <Text style={styles.label}>Customer Name</Text>
+                <Text style={styles.value}>{actualRequest?.userName}</Text>
+              </View>
+            </View>
+
+            <View style={styles.row}>
+              <View>
+                <Text style={styles.label}>Vehicle Number</Text>
+                <Text style={styles.value}>{actualRequest?.userVehicleNumber}</Text>
+              </View>
+              <View>
+                <Text style={styles.label}>Vehicle Model</Text>
+                <Text style={styles.value}>{actualRequest?.userVehicleModel}</Text>
+              </View>
             </View>
           </View>
 
-          <View style={styles.row}>
-            <View>
-              <Text style={styles.label}>Vehicle Brand</Text>
-              <Text style={styles.value}>{actualRequest.user?.vehicleBrand || 'Unknown Brand'}</Text>
-            </View>
-            <View>
-              <Text style={styles.label}>Fuel Type</Text>
-              <Text style={styles.value}>{actualRequest.user?.vehicleFuel || 'Unknown Fuel'}</Text>
-            </View>
-          </View>
-
-          <View>
-            <Text style={styles.label}>Total Amount</Text>
-            <Text style={styles.value}>₹ {actualRequest.amount || '0.00'}</Text>
-          </View>
-
-          <View style={styles.sliderContainer}>
-            <SlideToConfirm
-              onSlideComplete={handleAccept}
-              text="Accept Repair"
-              sliderColor="#fff"
-              trackColor="#006241"
-              textColor="#fff"
-              direction="right"
-            />
-            <SlideToConfirm
-              onSlideComplete={handleReject}
-              text="Ignore Repair"
-              sliderColor="#fff"
-              trackColor="#b00020"
-              textColor="#fff"
-              direction="left"
-            />
-          </View>
+          {/* Slide Actions */}
+          <View style={styles.buttonRow}>
+          <SlideToConfirm
+            onSlideComplete={handleAccept}
+            text="Accept Repair"
+            sliderColor="#fff"
+            trackColor="#007A4D"
+            textColor="#fff"
+            direction="right"
+          />
+          <SlideToConfirm
+            onSlideComplete={handleReject}
+            text="Ignore Repair"
+            sliderColor="#fff"
+            trackColor="#B00020"
+            textColor="#fff"
+            direction="left"
+          />
         </View>
       </View>
     </View>
   );
 };
 
-// ...existing code...
 const styles = StyleSheet.create({
-  modalContainer: {
-    position: 'absolute',
-    bottom: 0,
-    width: '100%',
-    paddingBottom: SIZES.padding,
+  container: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    paddingHorizontal: 16,
+    paddingBottom: 30,
+  },
+  cardTitle: {
+   flexDirection:'row',
+   gap: "50%"
+  },
+  topHeader: {
+    backgroundColor: '#F9F9FB',
+    borderTopLeftRadius: 32,
+    borderTopRightRadius: 32,
+    paddingHorizontal: 20,
+    paddingTop: 24,
+    paddingBottom: 8,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  headerText: {
+
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#44A9FF',
+  },
+  countdownCircle: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    borderWidth: 5,
+    borderColor: '#44A9FF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#E6F4FF',
+  },
+  countdownText: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#0080FF',
   },
   card: {
-    backgroundColor: COLORS.secondary,
-    borderRadius: SIZES.borderRadius,
-    padding: SIZES.padding,
-    height: 520,
-    width: width - 40,
-    marginHorizontal: 10,
-    alignSelf: 'center',
-    shadowColor: COLORS.textDark,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    elevation: 4,
-    justifyContent: 'space-between',
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 20,
+    marginTop: 8,
   },
-  timer: {
-    fontFamily: FONT_FAMILY.bold,
-    fontSize: FONTS.medium,
-    marginBottom: 10,
-    color: COLORS.primary,
-    textAlign: "center",
+  sectionTitle: {
+    fontSize: 14,
+    color: '#555',
+    fontWeight: '500',
+    marginBottom: 6,
   },
-  timerCircle: {
-    color: COLORS.primary,
-    backgroundColor: "#E3F2FD",
-    paddingHorizontal: 10,
-    borderRadius: SIZES.borderRadius,
-    overflow: 'hidden',
-    fontFamily: FONT_FAMILY.bold,
-    fontSize: FONTS.medium,
+  boldText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#000',
   },
-  section: {
-    marginBottom: 10,
+  descriptionText: {
+    fontSize: 14,
+    color: '#444',
+    marginVertical: 4,
   },
-  title: {
-    fontFamily: FONT_FAMILY.bold,
-    fontSize: FONTS.medium,
-    marginVertical: 2,
-    color: COLORS.textDark,
+  directionText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#007AFF',
   },
-  link: {
-    color: COLORS.primary,
-    fontSize: FONTS.small,
-    marginVertical: 2,
-    fontFamily: FONT_FAMILY.bold,
+  linkText: {
+    textDecorationLine: 'underline',
   },
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 10,
+    marginTop: 16,
   },
   label: {
-    fontSize: FONTS.small,
-    color: COLORS.text,
-    fontFamily: FONT_FAMILY.bold,
+    fontSize: 13,
+    color: '#666',
+    fontWeight: '500',
   },
   value: {
-    fontSize: FONTS.medium,
-    fontFamily: FONT_FAMILY.bold,
-    color: COLORS.textDark,
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#1A1A1A',
   },
-  sliderContainer: {
-    marginTop: 0,
-    gap: 8,
+  buttonRow: {
+    alignItems:"center",
+   
+    
   },
 });
-// ...existing code...
 
 export default MasterGettingRequest;

@@ -12,6 +12,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { COLORS, SIZES, FONT_FAMILY, FONTS } from "../../../constants/constants";
+import LoadingBars from "../../../components/reuableComponents/loadingBars";
 
 const VEHICLE_ICONS = {
   Bike: "https://cdn-icons-png.flaticon.com/512/2972/2972185.png",
@@ -99,7 +100,7 @@ useEffect(() => {
   if (loading) {
     return (
       <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#007BFF" />
+        <LoadingBars color={COLORS.primary} size={36} />
         <Text style={{ color: "#007BFF", marginTop: 10 }}>Loading your vehicles...</Text>
       </View>
     );
