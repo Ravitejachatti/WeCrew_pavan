@@ -6,6 +6,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { RequestProvider } from './contexts/RequestContext';
 import { NavigationProvider } from './contexts/NavigationContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 import GlobalRequestHandler from './components/GlobalRequestHandler';
 
 import { AuthNavigator } from './pages/navigation/AuthNavigator';
@@ -37,12 +38,14 @@ const AppContent = () => {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <RequestProvider>
-        <NavigationProvider>
-          <AppContent />
-        </NavigationProvider>
-      </RequestProvider>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <RequestProvider>
+          <NavigationProvider>
+            <AppContent />
+          </NavigationProvider>
+        </RequestProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }

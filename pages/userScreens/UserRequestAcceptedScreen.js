@@ -5,10 +5,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import UserBottomNavigator from "../../components/UserBottomNavigator";
 import { getDatabase, ref, get } from "firebase/database";
 import axios from "axios";
-import { COLORS, SIZES, FONT_FAMILY, FONTS, API } from "../../constants/constants";
+import { SIZES, FONT_FAMILY, FONTS, API } from "../../constants/constants";
+import { useTheme } from '../../contexts/ThemeContext';
 import LoadingBars from "../../components/reuableComponents/loadingBars";
 
 const UserRequestAcceptedScreen = ({ navigation }) => {
+  const { colors } = useTheme();
   const [request, setRequest] = useState(null);
   const [master, setMaster] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -59,7 +61,7 @@ const UserRequestAcceptedScreen = ({ navigation }) => {
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <LoadingBars color={COLORS.primary} size={36} />
+        <LoadingBars color={colors.primary} size={36} />
       </View>
     );
   }
@@ -114,13 +116,13 @@ const UserRequestAcceptedScreen = ({ navigation }) => {
     );
   };
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <ScrollView style={styles.container2} contentContainerStyle={{ paddingBottom: 100 }}>
         {/* Success Indicator */}
         <View style={styles.centered}>
-          <Ionicons name="checkmark-circle" size={70} color="#007BFF" style={styles.successIcon} />
+          <Ionicons name="checkmark-circle" size={70} color={colors.primary} style={styles.successIcon} />
           <Text style={styles.successText}>
-            Request <Text style={{ color: "#007BFF" }}>Accepted!</Text>
+            Request <Text style={{ color: colors.primary }}>Accepted!</Text>
           </Text>
           <Text style={styles.subText}>
             Your Master will arrive at your location soon.
@@ -135,7 +137,7 @@ const UserRequestAcceptedScreen = ({ navigation }) => {
           </View>
           <View style={styles.box}>
             <Text style={styles.label}>Request OTP</Text>
-            <Text style={[styles.value, { color: "#007BFF", letterSpacing: 8 }]}>{otp}</Text>
+            <Text style={[styles.value, { color: colors.primary, letterSpacing: 8 }]}>{otp}</Text>
           </View>
         </View>
 
@@ -153,7 +155,7 @@ const UserRequestAcceptedScreen = ({ navigation }) => {
           </View>
           <View style={styles.contactIcons}>
             <TouchableOpacity onPress={() => masterPhone && Linking.openURL(`tel:+${masterPhone}`)}>
-              <Feather name="phone-call" size={25} color="#007BFF" />
+              <Feather name="phone-call" size={25} color={colors.primary} />
             </TouchableOpacity>
             {/* <TouchableOpacity>
               <Ionicons name="chatbubble-ellipses-outline" size={22} color="#007BFF" />
@@ -207,10 +209,10 @@ const UserRequestAcceptedScreen = ({ navigation }) => {
         </View> */}
         <View style={styles.buttonContainer}>
           <TouchableOpacity onPress={() => masterPhone && Linking.openURL(`tel:+${masterPhone}`)}>
-            <Text style={[styles.buttonText, { color: "#007BFF" }]}>Contact</Text>
+            <Text style={[styles.buttonText, { color: colors.primary }]}>Contact</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => Alert.alert("Coming Soon", "Feature coming soon!")}>
-            <Text style={[styles.buttonText, { color: "#0D7552" }]}>Support</Text>
+            <Text style={[styles.buttonText, { color: colors.toggleActive }]}>Support</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => handleCancel()}>
             <Text style={[styles.buttonTextCancel, { color: "#FF3B30" }]}>Cancel</Text>
@@ -223,7 +225,7 @@ const UserRequestAcceptedScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#F9FAFB", alignItems: "center", padding: 10 },
+  container: { flex: 1, alignItems: "center", padding: 10 },
   container2: { width: "100%" },
   centered: { alignItems: "center", marginTop: 30, marginBottom: 10 },
   successIcon: { marginBottom: 10 },

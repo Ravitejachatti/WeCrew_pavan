@@ -3,11 +3,13 @@ import { View, Text, TouchableOpacity, StyleSheet, TextInput, Alert, KeyboardAvo
 import { FontAwesome, AntDesign } from '@expo/vector-icons';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from 'axios';
-import { COLORS, SIZES, FONT_FAMILY, FONTS, API } from "../../constants/constants";
+import { SIZES, FONT_FAMILY, FONTS, API } from "../../constants/constants";
+import { useTheme } from '../../contexts/ThemeContext';
 
 const BASE_URL = `${API}`; // Replace with your actual base URL
 
 const UserToMasterRatings = ({ navigation }) => {
+  const { colors } = useTheme();
   const [rating, setRating] = useState(0);
   const [feedback, setFeedback] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -59,7 +61,7 @@ const UserToMasterRatings = ({ navigation }) => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 0}
     >
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Header */}
       <Text style={styles.header}>Repair Complete</Text>
 
@@ -71,7 +73,7 @@ const UserToMasterRatings = ({ navigation }) => {
 
       {/* Inspiring Quote */}
       <View style={styles.quoteBox}>
-        <AntDesign name="bulb1" size={18} color="#007BFF" />
+        <AntDesign name="bulb1" size={18} color={colors.primary} />
         <Text style={styles.quoteText}>
           “We believe in service, not just earnings. Your feedback helps us grow together.”
         </Text>
@@ -102,7 +104,7 @@ const UserToMasterRatings = ({ navigation }) => {
 
       {/* Done Button - Enabled only when rating is provided */}
       <TouchableOpacity
-        style={[styles.doneButton, { backgroundColor: rating > 0 ? "#007BFF" : "#BEBEBE", marginTop: 30 }]}
+        style={[styles.doneButton, { backgroundColor: rating > 0 ? colors.primary : "#BEBEBE", marginTop: 30 }]}
         disabled={rating === 0 || submitting}
         onPress={handleDone}
       >
@@ -116,7 +118,6 @@ const UserToMasterRatings = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8F8FC',
     paddingHorizontal: 20,
     paddingTop: 50,
     alignItems: 'center'
@@ -149,7 +150,7 @@ const styles = StyleSheet.create({
   },
   quoteBox: {
     flexDirection: 'row',
-    backgroundColor: '#E8F0FE',
+    backgroundColor: '#E8F0FE', // Keep light blue for quote box
     padding: 14,
     borderRadius: 10,
     alignItems: 'center',
@@ -158,7 +159,7 @@ const styles = StyleSheet.create({
   },
   quoteText: {
     marginLeft: 10,
-    color: '#007BFF',
+    color: '#007BFF', // Keep blue for quote text
     fontSize: 15,
     fontStyle: 'italic',
     flex: 1,

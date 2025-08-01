@@ -7,12 +7,14 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Location from 'expo-location';
 import axios from 'axios';
-import { COLORS, SIZES, FONT_FAMILY, FONTS, API } from "../../constants/constants";
+import { SIZES, FONT_FAMILY, FONTS, API } from "../../constants/constants";
+import { useTheme } from '../../contexts/ThemeContext';
 import LoadingBars from '../../components/reuableComponents/loadingBars';
 
 const BASE_URL = `${API}`;
 
 const UserRepairRequestScreen = ({ navigation, route }) => {
+  const { colors } = useTheme();
   const [isSheetVisible, setSheetVisible] = useState(false);
   const [vehicles, setVehicles] = useState([]);
   const [selectedVehicle, setSelectedVehicle] = useState(null);
@@ -218,13 +220,13 @@ useEffect(() => {
   if (loading) {
     return (
       <View style={styles.container}>
-        <LoadingBars color={COLORS.primary} size={36} />
+        <LoadingBars color={colors.primary} size={36} />
       </View>
     );
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <Text style={styles.header}>Repair Request</Text>
 
       <View style={styles.card}>
@@ -316,7 +318,7 @@ useEffect(() => {
       </View>
 
       <TouchableOpacity style={styles.requestButton} onPress={() => setSheetVisible(true)}>
-        <Text style={styles.requestButtonText}>Request Repair</Text>
+        <Text style={[styles.requestButtonText, { backgroundColor: colors.primary }]}>Request Repair</Text>
       </TouchableOpacity>
 
       <RepairRequestSheet
@@ -334,7 +336,7 @@ useEffect(() => {
       {/* Loading indicator for submit */}
       {submitLoading && (
           <View>
-            <LoadingBars color={COLORS.primary} size={36} />
+            <LoadingBars color={colors.primary} size={36} />
         </View>
       )}
 
@@ -352,7 +354,7 @@ useEffect(() => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F8FAFF', padding: 20 },
+  container: { flex: 1, padding: 20 },
   header: { fontSize: 18, fontWeight: 'bold', textAlign: 'center', marginBottom: 20 },
   card: { backgroundColor: 'white', borderRadius: 10, padding: 15, elevation: 2 },
   label: { color: '#777', marginTop: 10, fontSize: 14 },
@@ -361,7 +363,7 @@ const styles = StyleSheet.create({
   changeText: { color: '#FE5E00', fontWeight: 'bold' },
   addresslabel: { color: '#777', fontSize: 14, margin: 10 },
   addressInput: { borderWidth: 1, borderColor: '#ccc', borderRadius: 8, padding: 8, backgroundColor: '#f8f8f8', fontSize: 14 },
-  requestButton: { backgroundColor: '#007BFF', padding: 15, borderRadius: 8, alignItems: 'center', marginVertical: 20 },
+  requestButton: { padding: 15, borderRadius: 8, alignItems: 'center', marginVertical: 20 },
   requestButtonText: { color: 'white', fontSize: 16, fontWeight: 'bold' },
   vehicleRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 10 },
   dropdownNoBorder: {

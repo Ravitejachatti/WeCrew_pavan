@@ -14,12 +14,14 @@ import { Ionicons } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { COLORS, SIZES, FONT_FAMILY, FONTS, API } from '../../../constants/constants';
+import { SIZES, FONT_FAMILY, FONTS, API } from '../../../constants/constants';
+import { useTheme } from '../../../contexts/ThemeContext';
 import LoadingBars from '../../../components/reuableComponents/loadingBars';
 
 const BASE_URL = `${API}`;
 
 const AddVehicle = ({ navigation }) => {
+  const { colors } = useTheme();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     vehicleType: 'Bike',
@@ -82,12 +84,12 @@ const AddVehicle = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color={COLORS.textDark} />
+          <Ionicons name="arrow-back" size={24} color={colors.textDark} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Add Vehicle</Text>
+        <Text style={[styles.headerTitle, { color: colors.textDark }]}>Add Vehicle</Text>
         <View style={styles.placeholder} />
       </View>
 
@@ -100,7 +102,7 @@ const AddVehicle = ({ navigation }) => {
               value={formData.registrationNumber}
               onChangeText={(value) => handleInputChange('registrationNumber', value)}
               placeholder="Enter registration number"
-              placeholderTextColor={COLORS.textLight}
+              placeholderTextColor={colors.textLight}
               autoCapitalize="characters"
             />
           </View>
@@ -162,14 +164,14 @@ const AddVehicle = ({ navigation }) => {
 
       <View style={styles.footer}>
         <TouchableOpacity
-          style={[styles.saveButton, loading && styles.disabledButton]}
+          style={[styles.saveButton, { backgroundColor: colors.primary }, loading && styles.disabledButton]}
           onPress={handleSave}
           disabled={loading}
         >
           {loading ? (
-            <LoadingBars color={COLORS.primary} size={36} />
+            <LoadingBars color={colors.primary} size={36} />
           ) : (
-            <Text style={styles.saveButtonText}>Add Vehicle</Text>
+            <Text style={[styles.saveButtonText, { color: colors.secondary }]}>Add Vehicle</Text>
           )}
         </TouchableOpacity>
       </View>
@@ -180,31 +182,29 @@ const AddVehicle = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.background,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: SIZES.padding,
+    paddingHorizontal: SIZES.padding, 
     paddingVertical: 15,
     borderBottomWidth: 1,
-    borderBottomColor: COLORS.border,
+    borderBottomColor: '#eee',
   },
   backButton: {
     padding: 5,
   },
   headerTitle: {
-    fontSize: FONTS.large,
-    fontFamily: FONT_FAMILY.bold,
-    color: COLORS.textDark,
+    fontSize: FONTS.large, 
+    fontFamily: FONT_FAMILY.bold, 
   },
   placeholder: {
     width: 34,
   },
   content: {
     flex: 1,
-    paddingHorizontal: SIZES.padding,
+    paddingHorizontal: SIZES.padding, 
   },
   form: {
     paddingVertical: 20,
@@ -213,51 +213,46 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   label: {
-    fontSize: FONTS.medium,
-    fontFamily: FONT_FAMILY.bold,
-    color: COLORS.textDark,
+    fontSize: FONTS.medium, 
+    fontFamily: FONT_FAMILY.bold, 
     marginBottom: 8,
   },
   input: {
     borderWidth: 1,
-    borderColor: COLORS.border,
-    borderRadius: SIZES.borderRadius,
+    borderColor: '#eee',
+    borderRadius: SIZES.borderRadius, 
     paddingHorizontal: 15,
     paddingVertical: 12,
-    fontSize: FONTS.medium,
-    fontFamily: FONT_FAMILY.regular,
-    color: COLORS.textDark,
-    backgroundColor: COLORS.secondary,
+    fontSize: FONTS.medium, 
+    fontFamily: FONT_FAMILY.regular, 
+    backgroundColor: '#ffffff',
   },
   pickerContainer: {
     borderWidth: 1,
-    borderColor: COLORS.border,
-    borderRadius: SIZES.borderRadius,
-    backgroundColor: COLORS.secondary,
+    borderColor: '#eee',
+    borderRadius: SIZES.borderRadius, 
+    backgroundColor: '#ffffff',
   },
   picker: {
-    color: COLORS.textDark,
-    fontSize: FONTS.medium,
+    fontSize: FONTS.medium, 
   },
   footer: {
-    paddingHorizontal: SIZES.padding,
+    paddingHorizontal: SIZES.padding, 
     paddingVertical: 20,
     borderTopWidth: 1,
-    borderTopColor: COLORS.border,
+    borderTopColor: '#eee',
   },
   saveButton: {
-    backgroundColor: COLORS.primary,
     paddingVertical: 15,
-    borderRadius: SIZES.borderRadius,
+    borderRadius: SIZES.borderRadius, 
     alignItems: 'center',
   },
   disabledButton: {
-    backgroundColor: COLORS.textLight,
+    backgroundColor: '#888',
   },
   saveButtonText: {
-    color: COLORS.secondary,
-    fontSize: FONTS.medium,
-    fontFamily: FONT_FAMILY.bold,
+    fontSize: FONTS.medium, 
+    fontFamily: FONT_FAMILY.bold, 
   },
 });
 

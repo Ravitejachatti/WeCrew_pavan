@@ -6,28 +6,31 @@ import {
   Image,
   StyleSheet,
 } from 'react-native';
+import { useTheme } from '../../contexts/ThemeContext';
 
 const FuelEVToggle = ({ onToggle }) => {
-  const [isEV, setIsEV] = useState(false);
+  const { colors, isEV } = useTheme();
   const translateX = useRef(new Animated.Value(2)).current;
   const borderColor = useRef(new Animated.Value(0)).current; // 0 = fuel, 1 = ev
 
-  const toggleSwitch = () => {
+  // Update animation based on current theme
+  useEffect(() => {
     Animated.parallel([
       Animated.timing(translateX, {
-        toValue: isEV ? 2 : 40,
+        toValue: isEV ? 40 : 2,
         duration: 250,
         useNativeDriver: true,
       }),
       Animated.timing(borderColor, {
-        toValue: isEV ? 0 : 1,
+        toValue: isEV ? 1 : 0,
         duration: 250,
-        useNativeDriver: true, // color animation must be JS-driven
+        useNativeDriver: false,
       }),
     ]).start();
+  }, [isEV]);
 
-    setIsEV(!isEV);
-    onToggle?.(!isEV);
+  const toggleSwitch = () => {
+    onToggle?.(isEV);
   };
 
   const interpolatedBorderColor = borderColor.interpolate({

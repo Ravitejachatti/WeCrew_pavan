@@ -11,7 +11,8 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { COLORS, SIZES, FONT_FAMILY, FONTS } from "../../../constants/constants";
+import { SIZES, FONT_FAMILY, FONTS } from "../../../constants/constants";
+import { useTheme } from '../../../contexts/ThemeContext';
 import LoadingBars from "../../../components/reuableComponents/loadingBars";
 
 const VEHICLE_ICONS = {
@@ -22,6 +23,7 @@ const VEHICLE_ICONS = {
 };
 
 export default function UserVehicles({ navigation }) {
+  const { colors } = useTheme();
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -86,7 +88,7 @@ useEffect(() => {
             style={styles.editButton}
             onPress={() => navigation.navigate('EditVehicle', { vehicle: item })}
           >
-            <Ionicons name="pencil" size={20} color={COLORS.primary} />
+            <Ionicons name="pencil" size={20} color={colors.primary} />
           </TouchableOpacity>
         </View>
         <View style={styles.divider} />
@@ -100,7 +102,7 @@ useEffect(() => {
   if (loading) {
     return (
       <View style={styles.centered}>
-        <LoadingBars color={COLORS.primary} size={36} />
+        <LoadingBars color={colors.primary} size={36} />
         <Text style={{ color: "#007BFF", marginTop: 10 }}>Loading your vehicles...</Text>
       </View>
     );
@@ -119,12 +121,12 @@ useEffect(() => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={styles.headerContainer}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color="#007BFF" />
+          <Ionicons name="arrow-back" size={24} color={colors.primary} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>My Vehicles</Text>
+        <Text style={[styles.headerTitle, { color: colors.primary }]}>My Vehicles</Text>
       </View>
       <FlatList
         data={vehicles}
@@ -146,11 +148,11 @@ useEffect(() => {
       {/* Add Vehicle Button BELOW the list */}
     <View style={styles.addButtonWrapper}>
       <TouchableOpacity
-        style={styles.addButton}
+        style={[styles.addButton, { backgroundColor: colors.primary }]}
         onPress={() => navigation.navigate('AddVehicle')}
       >
-        <Ionicons name="add" size={24} color={COLORS.secondary} />
-        <Text style={styles.addButtonText}>Add Vehicle</Text>
+        <Ionicons name="add" size={24} color={colors.secondary} />
+        <Text style={[styles.addButtonText, { color: colors.secondary }]}>Add Vehicle</Text>
       </TouchableOpacity>
     </View>
     </SafeAreaView>
@@ -183,7 +185,6 @@ headerTitle: {
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: "#F8FAFF",
   },
   header: {
     flexDirection: 'row',
@@ -192,13 +193,11 @@ headerTitle: {
     marginBottom: 18,
   },
   header: {
-    fontSize: 26,
-    fontWeight: "bold",
-    color: "#007BFF",
+    fontSize: 26, 
+    fontWeight: "bold", 
     letterSpacing: 1,
   },
-  addButton: {
-    backgroundColor: COLORS.primary,
+  addButton: { 
     width: 40,
     height: 40,
     borderRadius: 20,
@@ -300,7 +299,6 @@ headerTitle: {
 addButton: {
   flexDirection: 'row',
   alignItems: 'center',
-  backgroundColor: COLORS.primary,
   paddingHorizontal: 20,
   paddingVertical: 12,
   borderRadius: 25,
@@ -308,7 +306,6 @@ addButton: {
 },
 addButtonText: {
   marginLeft: 10,
-  color: COLORS.secondary,
   fontSize: 16,
   fontWeight: 'bold',
 },

@@ -13,7 +13,8 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../../contexts/AuthContext';
 import axios from 'axios';
-import { COLORS, SIZES, FONT_FAMILY, FONTS, API } from '../../../constants/constants';
+import { SIZES, FONT_FAMILY, FONTS, API } from '../../../constants/constants';
+import { useTheme } from '../../../contexts/ThemeContext';
 import { use } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoadingBars from '../../../components/reuableComponents/loadingBars';
@@ -22,6 +23,7 @@ import LoadingBars from '../../../components/reuableComponents/loadingBars';
 const BASE_URL = `${API}`;
 
 const EditUserProfile = ({ navigation }) => {
+  const { colors } = useTheme();
   const { user, updateUser } = useAuth();
   const [userData, setUserData] = useState(null);
 
@@ -105,12 +107,12 @@ const EditUserProfile = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color={COLORS.textDark} />
+          <Ionicons name="arrow-back" size={24} color={colors.textDark} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Edit Profile</Text>
+        <Text style={[styles.headerTitle, { color: colors.textDark }]}>Edit Profile</Text>
         <View style={styles.placeholder} />
       </View>
 
@@ -123,7 +125,7 @@ const EditUserProfile = ({ navigation }) => {
               value={formData.name}
               onChangeText={(value) => handleInputChange('name', value)}
               placeholder="Enter your name"
-              placeholderTextColor={COLORS.textLight}
+              placeholderTextColor={colors.textLight}
             /> 
           </View>
 
@@ -134,7 +136,7 @@ const EditUserProfile = ({ navigation }) => {
               value={formData.email}
               onChangeText={(value) => handleInputChange('email', value)}
               placeholder="Enter your email"
-              placeholderTextColor={COLORS.textLight}
+              placeholderTextColor={colors.textLight}
               keyboardType="email-address"
               autoCapitalize="none"
             />
@@ -146,7 +148,7 @@ const EditUserProfile = ({ navigation }) => {
               style={[styles.input, styles.disabledInput]}
               value={formData.phone}
               placeholder="Phone number"
-              placeholderTextColor={COLORS.textLight}
+              placeholderTextColor={colors.textLight}
               editable={false}
             />
             <Text style={styles.helperText}>Phone number cannot be changed</Text>
@@ -160,12 +162,14 @@ const EditUserProfile = ({ navigation }) => {
                   key={gender}
                   style={[
                     styles.genderOption,
+                    { borderColor: colors.border, backgroundColor: colors.secondary },
                     formData.gender === gender && styles.selectedGender
                   ]}
                   onPress={() => handleInputChange('gender', gender)}
                 >
                   <Text style={[
                     styles.genderText,
+                    { color: colors.textDark },
                     formData.gender === gender && styles.selectedGenderText
                   ]}>
                     {gender}
@@ -185,7 +189,7 @@ const EditUserProfile = ({ navigation }) => {
               value={formData.dob}
               onChangeText={(value) => handleInputChange('dob', value)}
               placeholder="YYYY-MM-DD"
-              placeholderTextColor={COLORS.textLight}
+              placeholderTextColor={colors.textLight}
             />
           </View>
         </View>
@@ -193,14 +197,14 @@ const EditUserProfile = ({ navigation }) => {
 
       <View style={styles.footer}>
         <TouchableOpacity
-          style={[styles.saveButton, loading && styles.disabledButton]}
+          style={[styles.saveButton, { backgroundColor: colors.primary }, loading && styles.disabledButton]}
           onPress={handleSave}
           disabled={loading}
         >
           {loading ? (
-            <LoadingBars color={COLORS.primary} size={36} />
+            <LoadingBars color={colors.primary} size={36} />
           ) : (
-            <Text style={styles.saveButtonText}>Save Changes</Text>
+            <Text style={[styles.saveButtonText, { color: colors.secondary }]}>Save Changes</Text>
           )}
         </TouchableOpacity>
       </View>
@@ -211,31 +215,29 @@ const EditUserProfile = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.background,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: SIZES.padding,
+    paddingHorizontal: SIZES.padding, 
     paddingVertical: 15,
     borderBottomWidth: 1,
-    borderBottomColor: COLORS.border,
+    borderBottomColor: '#eee',
   },
   backButton: {
     padding: 5,
   },
   headerTitle: {
-    fontSize: FONTS.large,
+    fontSize: FONTS.large, 
     fontFamily: FONT_FAMILY.bold,
-    color: COLORS.textDark,
   },
   placeholder: {
     width: 34,
   },
   content: {
     flex: 1,
-    paddingHorizontal: SIZES.padding,
+    paddingHorizontal: SIZES.padding, 
   },
   form: {
     paddingVertical: 20,
@@ -244,31 +246,28 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   label: {
-    fontSize: FONTS.medium,
-    fontFamily: FONT_FAMILY.bold,
-    color: COLORS.textDark,
+    fontSize: FONTS.medium, 
+    fontFamily: FONT_FAMILY.bold, 
     marginBottom: 8,
   },
   input: {
     borderWidth: 1,
-    borderColor: COLORS.border,
-    borderRadius: SIZES.borderRadius,
+    borderColor: '#eee',
+    borderRadius: SIZES.borderRadius, 
     paddingHorizontal: 15,
     paddingVertical: 12,
-    fontSize: FONTS.medium,
-    fontFamily: FONT_FAMILY.regular,
-    color: COLORS.textDark,
-    backgroundColor: COLORS.secondary,
+    fontSize: FONTS.medium, 
+    fontFamily: FONT_FAMILY.regular, 
+    backgroundColor: '#ffffff',
   },
   disabledInput: {
     backgroundColor: '#f5f5f5',
-    color: COLORS.textLight,
   },
   helperText: {
-    fontSize: FONTS.small,
-    color: COLORS.textLight,
+    fontSize: FONTS.small, 
+    color: '#888',
     marginTop: 5,
-    fontFamily: FONT_FAMILY.regular,
+    fontFamily: FONT_FAMILY.regular, 
   },
   genderContainer: {
     flexDirection: 'row',
@@ -279,44 +278,39 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 15,
     borderWidth: 1,
-    borderColor: COLORS.border,
-    borderRadius: SIZES.borderRadius,
+    borderRadius: SIZES.borderRadius, 
     marginHorizontal: 5,
     alignItems: 'center',
-    backgroundColor: COLORS.secondary,
   },
   selectedGender: {
-    borderColor: COLORS.primary,
+    borderColor: '#007BFF', // Will be overridden by dynamic color
     backgroundColor: '#e3f2fd',
   },
   genderText: {
-    fontSize: FONTS.medium,
-    fontFamily: FONT_FAMILY.regular,
-    color: COLORS.textDark,
+    fontSize: FONTS.medium, 
+    fontFamily: FONT_FAMILY.regular, 
   },
   selectedGenderText: {
-    color: COLORS.primary,
-    fontFamily: FONT_FAMILY.bold,
+    color: '#007BFF', // Will be overridden by dynamic color
+    fontFamily: FONT_FAMILY.bold, 
   },
   footer: {
-    paddingHorizontal: SIZES.padding,
+    paddingHorizontal: SIZES.padding, 
     paddingVertical: 20,
     borderTopWidth: 1,
-    borderTopColor: COLORS.border,
+    borderTopColor: '#eee',
   },
   saveButton: {
-    backgroundColor: COLORS.primary,
     paddingVertical: 15,
-    borderRadius: SIZES.borderRadius,
+    borderRadius: SIZES.borderRadius, 
     alignItems: 'center',
   },
   disabledButton: {
-    backgroundColor: COLORS.textLight,
+    backgroundColor: '#888',
   },
   saveButtonText: {
-    color: COLORS.secondary,
-    fontSize: FONTS.medium,
-    fontFamily: FONT_FAMILY.bold,
+    fontSize: FONTS.medium, 
+    fontFamily: FONT_FAMILY.bold, 
   },
 });
 

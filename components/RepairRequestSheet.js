@@ -9,7 +9,8 @@ import {
   TouchableWithoutFeedback
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, SIZES, FONT_FAMILY, FONTS } from "../constants/constants";
+import { SIZES, FONT_FAMILY, FONTS } from "../constants/constants";
+import { useTheme } from '../contexts/ThemeContext';
 
 const RepairRequestSheet = ({
   isVisible,
@@ -19,6 +20,7 @@ const RepairRequestSheet = ({
   vehicle,
   onProceed
 }) => {
+  const { colors } = useTheme();
   const slideAnim = useRef(new Animated.Value(400)).current;
   const [selectedPayment, setSelectedPayment] = useState('Pay Later');
 
@@ -76,7 +78,7 @@ const RepairRequestSheet = ({
                 onPress={() => setSelectedPayment('Pay Now')}
               >
                 <Text style={[styles.paymentText, selectedPayment === 'Pay Now' && styles.selectedText]}>Pay Now</Text>
-                {selectedPayment === 'Pay Now' && <Ionicons name="checkmark-circle" size={18} color="#007BFF" />}
+                {selectedPayment === 'Pay Now' && <Ionicons name="checkmark-circle" size={18} color={colors.primary} />}
               </TouchableOpacity>
 
               <TouchableOpacity 
@@ -84,7 +86,7 @@ const RepairRequestSheet = ({
                 onPress={() => setSelectedPayment('Pay Later')}
               >
                 <Text style={[styles.paymentText, selectedPayment === 'Pay Later' && styles.selectedText]}>Pay Later</Text>
-                {selectedPayment === 'Pay Later' && <Ionicons name="checkmark-circle" size={18} color="#007BFF" />}
+                {selectedPayment === 'Pay Later' && <Ionicons name="checkmark-circle" size={18} color={colors.primary} />}
               </TouchableOpacity>
             </View>
 
@@ -125,7 +127,7 @@ const RepairRequestSheet = ({
               </TouchableOpacity>
             ) : (
               <TouchableOpacity 
-                style={styles.payNowButton} 
+                style={[styles.payNowButton, { backgroundColor: colors.primary }]} 
                 onPress={onProceed}
               >
                 <Text style={styles.payNowText}>Proceed</Text>
@@ -204,9 +206,9 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   selectedPayment: {
-    backgroundColor: '#e3f2fd',
-    borderWidth: 1,
-    borderColor: '#007BFF',
+    backgroundColor: '#e3f2fd', // Keep light blue for selection
+    borderWidth: 1, 
+    borderColor: '#007BFF', // Keep blue for border
   },
   paymentText: {
     fontSize: 14,
@@ -214,7 +216,7 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   selectedText: {
-    color: '#007BFF',
+    color: '#007BFF', // Keep blue for selected text
     fontWeight: 'bold',
   },
   paymentSummary: {
@@ -261,7 +263,6 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   payNowButton: {
-    backgroundColor: '#007BFF',
     padding: 12,
     borderRadius: 10,
     alignItems: 'center',

@@ -10,11 +10,13 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { COLORS, SIZES, FONT_FAMILY, FONTS } from "../constants/constants";
+import { SIZES, FONT_FAMILY, FONTS } from "../constants/constants";
+import { useTheme } from '../contexts/ThemeContext';
 
 const { width } = Dimensions.get('window');
 
 const UserBottomNavigator = () => {
+  const { colors } = useTheme();
   const navigation = useNavigation();
   const route = useRoute();
   const activeRoute = route.name;
@@ -57,9 +59,9 @@ const UserBottomNavigator = () => {
           <Icon
             name="home"
             size={24}
-            color={isActive('UserHome') ? '#007BFF' : '#999'}
+            color={isActive('UserHome') ? colors.primary : '#999'}
           />
-          <Text style={[styles.navText, { color: isActive('UserHome') ? '#007BFF' : '#999' }]}>
+          <Text style={[styles.navText, { color: isActive('UserHome') ? colors.primary : '#999' }]}>
             Home
           </Text>
         </TouchableOpacity>
@@ -71,7 +73,7 @@ const UserBottomNavigator = () => {
           accessibilityLabel="Add Repair Request"
           testID="nav-plus"
         >
-          <View style={styles.plusButton}>
+          <View style={[styles.plusButton, { backgroundColor: colors.primary }]}>
             <Icon name="add" size={32} color="#FFFFFF" />
           </View>
         </TouchableOpacity>
@@ -86,9 +88,9 @@ const UserBottomNavigator = () => {
           <Icon
             name="person-outline"
             size={24}
-            color={isActive('ProfileScreen') ? '#007BFF' : '#999'}
+            color={isActive('ProfileScreen') ? colors.primary : '#999'}
           />
-          <Text style={[styles.navText, { color: isActive('ProfileScreen') ? '#007BFF' : '#999' }]}>
+          <Text style={[styles.navText, { color: isActive('ProfileScreen') ? colors.primary : '#999' }]}>
             Profile
           </Text>
         </TouchableOpacity>
@@ -138,13 +140,11 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   plusButton: {
-    backgroundColor: '#007BFF',
     width: 70,
     height: 70,
     borderRadius: 35,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#007BFF',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 5,

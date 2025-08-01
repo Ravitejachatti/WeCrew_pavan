@@ -4,10 +4,12 @@ import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import UserBottomNavigator from "../../components/UserBottomNavigator";
 import { useAuth } from "../../contexts/AuthContext";
-import { COLORS, SIZES, FONT_FAMILY, FONTS } from "../../constants/constants";
+import { SIZES, FONT_FAMILY, FONTS } from "../../constants/constants";
+import { useTheme } from '../../contexts/ThemeContext';
 
 
 const UserProfileScreen = ({ navigation }) => {
+  const { colors } = useTheme();
   const { user, logout, authLoading } = useAuth();
   // user details from the async storage
   const [userData, setUserData] = useState(null);
@@ -38,14 +40,14 @@ const handleLogout = () => {
 };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Profile Section */}
       <View style={styles.profileContainer}>
         <TouchableOpacity 
           style={styles.editProfileButton}
           onPress={() => navigation.navigate('EditUserProfile')}
         >
-          <Ionicons name="pencil" size={20} color={COLORS.primary} />
+          <Ionicons name="pencil" size={20} color={colors.primary} />
         </TouchableOpacity>
         <Image
           source={{ uri: "https://randomuser.me/api/portraits/men/75.jpg" }}
@@ -94,7 +96,7 @@ const menuItems = [
 ];
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#F9FAFB", paddingHorizontal: 20, paddingTop: 50 },
+  container: { flex: 1, paddingHorizontal: 20, paddingTop: 50 },
   profileContainer: { alignItems: "center", marginBottom: 20 },
   editProfileButton: {
     position: 'absolute',

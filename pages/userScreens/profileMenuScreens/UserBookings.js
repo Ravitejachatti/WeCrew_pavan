@@ -3,12 +3,14 @@ import { View, Text, FlatList, ActivityIndicator, StyleSheet, Image, TouchableOp
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
-import { COLORS, SIZES, FONT_FAMILY, FONTS, API } from "../../../constants/constants";
+import { SIZES, FONT_FAMILY, FONTS, API } from "../../../constants/constants";
+import { useTheme } from '../../../contexts/ThemeContext';
 import LoadingBars from "../../../components/reuableComponents/loadingBars";
 
 const BASE_URL = `${API}`; // Replace with your actual base URL
 
 const UserBookings = ({navigation}) => {
+  const { colors } = useTheme();
   const [userId, setUserId] = useState(null);
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -70,7 +72,7 @@ const UserBookings = ({navigation}) => {
   if (loading) {
     return (
       <View style={styles.centered}>
-        <LoadingBars color={COLORS.primary} size={36} />
+        <LoadingBars color={colors.primary} size={36} />
         <Text style={{ color: "#007BFF", marginTop: 10 }}>Loading your bookings...</Text>
       </View>
     );
@@ -89,12 +91,12 @@ const UserBookings = ({navigation}) => {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
             <View style={styles.headerContainer}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color="#007BFF" />
+          <Ionicons name="arrow-back" size={24} color={colors.primary} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>My Vehicles</Text>
+        <Text style={[styles.headerTitle, { color: colors.primary }]}>My Bookings</Text>
       </View>
       <FlatList
         data={bookings}
@@ -127,10 +129,9 @@ headerTitle: {
   textAlign: 'center',
   fontSize: 24,
   fontWeight: 'bold',
-  color: "#007BFF",
   letterSpacing: 0.5,
 },
-  container: { flex: 1, backgroundColor: "#F9FAFB", padding: 16 },
+  container: { flex: 1, padding: 16 },
   header: {
     fontSize: 22,
     fontWeight: "bold",

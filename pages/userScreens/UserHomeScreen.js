@@ -7,12 +7,12 @@ import { useNavigation } from '@react-navigation/native';
 import UserBottomNavigator from '../../components/UserBottomNavigator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BackHandler } from 'react-native';
-import { COLORS, SIZES, FONT_FAMILY, FONTS } from "../../constants/constants";
+import { SIZES, FONT_FAMILY, FONTS } from "../../constants/constants";
 import RequestStatusRedirectButton from '../../components/RequestStatusRedirectButton';
-import FuelEVToggle from '../../components/reuableComponents/ToggleButtonEv';
+import { useTheme } from '../../contexts/ThemeContext';
 
 export default function UserHomeScreen() {
-  const [isEV, setIsEV] = useState(false);
+  const { colors, serviceImages, toggleTheme, setThemeBasedOnVehicle, isEV } = useTheme();
   const [showEVToggle, setShowEVToggle] = useState(false);
   const [greeting, setGreeting] = useState('');
   const [userName, setUserName] = useState(null);
@@ -27,12 +27,10 @@ export default function UserHomeScreen() {
   // }, []);
 
   // Check AsyncStorage for EV vehicle type and get user name
-  console.log("username")
   useEffect(() => {
     const checkEVAndUser = async () => {
       try {
         const userData = await AsyncStorage.getItem('userData');
-        console.log("userData ", JSON.parse(userData))      
         if (userData) {
           const parsed = JSON.parse(userData);
           const vehicles = parsed.VehicleDetails || [];
@@ -40,11 +38,15 @@ export default function UserHomeScreen() {
             v => (v.vehicleType && v.vehicleType.toLowerCase() === 'ev') || (v.fuelType && v.fuelType.toLowerCase() === 'ev')
           );
           setShowEVToggle(hasEV);
+          
+          // Set initial theme based on vehicle type
+          if (hasEV) {
+            await setThemeBasedOnVehicle(true);
+          }
 
           // Set user name
           const name = parsed.name ? parsed.name.trim() : parsed?.user?.name;
           setUserName(name);
-          console.log("username", name);
         }
       } catch (e) {
         setShowEVToggle(false);
@@ -64,25 +66,56 @@ export default function UserHomeScreen() {
     setGreetingMessage();
   }, []);
 
-  const toggleSwitch = () => {
-    Animated.parallel([
-      Animated.timing(translateX, {
-        toValue: isEV ? 0 : 27,
-        duration: 200,
-        useNativeDriver: true,
-      }),
-      Animated.timing(textTranslateX, {
-        toValue: isEV ? 0 : -20,
-        duration: 200,
-        useNativeDriver: true,
-      }),
-    ]).start();
+  const handleToggleChange = async (newIsEV) => {
+    await setThemeBasedOnVehicle(newIsEV);
+  };
 
-    setIsEV(!isEV);
+  const FuelEVToggle = ({ onToggle }) => {
+    const toggleSwitch = () => {
+      Animated.parallel([
+        Animated.timing(translateX, {
+          toValue: isEV ? 0 : 27,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+        Animated.timing(textTranslateX, {
+          toValue: isEV ? 0 : -20,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+      ]).start();
+
+      onToggle(!isEV);
+    };
+
+    return (
+      <TouchableOpacity
+        style={[styles.toggleButton, isEV ? styles.activeToggle : styles.inactiveToggle]}
+        onPress={toggleSwitch}
+      >
+        <Animated.View 
+          style={[
+            styles.circle, 
+            { 
+              transform: [{ translateX }], 
+              backgroundColor: isEV ? 'white' : colors.primary 
+            }
+          ]} 
+        />
+        <Animated.Text
+          style={[
+            styles.toggleText,
+            { transform: [{ translateX: textTranslateX }], color: isEV ? 'white' : colors.primary },
+          ]}
+        >
+          EV
+        </Animated.Text>
+      </TouchableOpacity>
+    );
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <ScrollView showsVerticalScrollIndicator={false}>
         
         {/* Header */}
@@ -99,40 +132,15 @@ export default function UserHomeScreen() {
           </View>
 
           {/* Show EV toggle only if user has EV vehicle */}
-          <FuelEVToggle onToggle={(isEV) => console.log("User selected:", isEV ? "EV" : "Fuel")}/>
-{/* 
-            <TouchableOpacity
-              style={[styles.toggleButton, isEV ? styles.activeToggle : styles.inactiveToggle]}
-              onPress={toggleSwitch}
-            >
-             
-              <Animated.View 
-                style={[
-                  styles.circle, 
-                  { 
-                    transform: [{ translateX }], 
-                    backgroundColor: isEV ? 'white' : '#007BFF' 
-                  }
-                ]} 
-              />
-
-             
-              <Animated.Text
-                style={[
-                  styles.toggleText,
-                  { transform: [{ translateX: textTranslateX }], color: isEV ? 'white' : '#007BFF' },
-                ]}
-              >
-                EV
-              </Animated.Text>
-            </TouchableOpacity> */}
-          
+          {showEVToggle && (
+            <FuelEVToggle onToggle={handleToggleChange} />
+          )}
         </View>
 
         {/* Promo Banner */}
         <View style={styles.bannerWrapper}>
           <Image
-            source={require('../../assets/userHomeScreen/image.png')}
+            source={serviceImages.emergencyRoadAssist}
             style={styles.bannerImage}
           />
         </View>
@@ -144,23 +152,25 @@ export default function UserHomeScreen() {
         <View style={styles.servicesGrid}>
           <TouchableOpacity style={styles.serviceCardLarge}>
             <Image
-              source={require('../../assets/userHomeScreen/image.png')}
+              source={serviceImages.emergencyRoadAssist}
               style={styles.serviceImage}
             />
-            <Text style={styles.serviceText}>Emergency{"\n"}Road Asst</Text>
+            <Text style={styles.serviceText}>
+              {isEV ? "Emergency\nEV Assist" : "Emergency\nRoad Asst"}
+            </Text>
           </TouchableOpacity>
 
           <View style={styles.serviceRow}>
             <TouchableOpacity style={styles.serviceCardSmall}>
               <Image
-                source={require('../../assets/userHomeScreen/Group 25652.png')}
+                source={serviceImages.service1}
                 style={styles.serviceImage}
               />
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.serviceCardSmall}>
               <Image
-                source={require('../../assets/userHomeScreen/Group 25653.png')}
+                source={serviceImages.service2}
                 style={styles.serviceImage}
               />
             </TouchableOpacity>
@@ -180,7 +190,6 @@ export default function UserHomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fefefe',
   },
   header: {
     flexDirection: 'row',
@@ -220,18 +229,17 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   activeToggle: {
-    backgroundColor: '#0D7552',
+    backgroundColor: '#0D7552', // Green for EV
   },
   inactiveToggle: {
     backgroundColor: 'white',
-    borderWidth: 1,
-    borderColor: '#007BFF',
+    borderWidth: 1, 
+    borderColor: '#007BFF', // Blue for Fuel
   },
   circle: {
     width: 20,
     height: 20,
     borderRadius: 10,
-    backgroundColor: '#007BFF',
     position: 'absolute',
     left: 5,
   },

@@ -9,8 +9,10 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { getDatabase, ref, get } from "firebase/database";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useTheme } from '../contexts/ThemeContext';
 
 const RequestStatusRedirectButton = () => {
+  const { colors } = useTheme();
   const navigation = useNavigation();
   const bounceValue = useRef(new Animated.Value(1)).current;
   const [shouldShowButton, setShouldShowButton] = useState(false);
@@ -98,6 +100,7 @@ const RequestStatusRedirectButton = () => {
     <Animated.View
       style={[
         styles.floatingButton,
+        { backgroundColor: colors.primary },
         { transform: [{ scale: bounceValue }] },
       ]}
     >
@@ -117,7 +120,6 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     overflow: "hidden",
     elevation: 5,
-    backgroundColor: "#007AFF",
   },
   innerButton: {
     paddingVertical: 12,
