@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#80000000">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginHorizontal="20dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="8dp"
+        app:cardBackgroundColor="#FFFFFF">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <!-- Timer Section -->
+            <TextView
+                android:id="@+id/overlay_timer_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Auto-reject in: 30s"
+                android:textAlignment="center"
+                android:textColor="#FF5722"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:background="#FFEBE9"
+                android:padding="12dp"
+                android:layout_marginBottom="16dp"
+                android:drawableStart="@android:drawable/ic_dialog_alert"
+                android:drawablePadding="8dp"
+                android:gravity="center" />
+
+            <!-- Customer Info Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="#F5F5F5"
+                android:padding="12dp"
+                android:layout_marginBottom="12dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Customer Details"
+                    android:textColor="#333333"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:id="@+id/overlay_customer_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Customer Name"
+                    android:textColor="#1976D2"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="4dp" />
+
+                <TextView
+                    android:id="@+id/overlay_location"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="📍 Location"
+                    android:textColor="#666666"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="4dp" />
+
+            </LinearLayout>
+
+            <!-- Service Info Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="12dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginEnd="8dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Service Type"
+                        android:textColor="#666666"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/overlay_service_type"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Service Type"
+                        android:textColor="#333333"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginStart="8dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Amount"
+                        android:textColor="#666666"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/overlay_amount"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="₹ 0.00"
+                        android:textColor="#4CAF50"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Issue Description -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Issue Description"
+                    android:textColor="#666666"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/overlay_issue_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Issue Description"
+                    android:textColor="#333333"
+                    android:textSize="14sp"
+                    android:maxLines="2"
+                    android:ellipsize="end" />
+
+            </LinearLayout>
+
+            <!-- Action Buttons -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <Button
+                    android:id="@+id/overlay_reject_button"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    android:text="REJECT"
+                    android:backgroundTint="#F44336"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold"
+                    android:drawableStart="@android:drawable/ic_menu_close_clear_cancel"
+                    android:drawablePadding="8dp"
+                    android:gravity="center" />
+
+                <Button
+                    android:id="@+id/overlay_accept_button"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:text="ACCEPT"
+                    android:backgroundTint="#4CAF50"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold"
+                    android:drawableStart="@android:drawable/ic_menu_send"
+                    android:drawablePadding="8dp"
+                    android:gravity="center" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>

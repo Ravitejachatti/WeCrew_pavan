@@ -1,4 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
+  <!-- Existing permissions -->
   <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
   <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
   <uses-permission android:name="android.permission.INTERNET"/>
@@ -8,24 +9,36 @@
   <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
   <uses-permission android:name="android.permission.VIBRATE"/>
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-   <!-- Background Location Permission (Android 10+) -->
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
-     <!-- Foreground Service Permissions -->
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
-     <!-- Other required permissions -->
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-     <!-- Hardware features -->
-    <uses-feature 
-        android:name="android.hardware.location" 
-        android:required="true" />
-    <uses-feature 
-        android:name="android.hardware.location.gps" 
-        android:required="false" />
-    <uses-feature 
-        android:name="android.hardware.location.network" 
-        android:required="false" />
+  <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+  <uses-permission android:name="android.permission.WAKE_LOCK" />
+  <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+  <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
+
+  <!-- NEW PERMISSIONS TO ADD -->
+  <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+  <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+  <uses-permission android:name="android.permission.TURN_SCREEN_ON" />
+  <uses-permission android:name="android.permission.SHOW_WHEN_LOCKED" />
+  <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SYSTEM_EXEMPTED" />
+  <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+  <uses-permission android:name="android.permission.START_FOREGROUND_SERVICES_FROM_BACKGROUND" />
+  <uses-permission android:name="android.permission.ACTION_MANAGE_OVERLAY_PERMISSION" 
+      tools:ignore="ProtectedPermissions" />
+
+  <!-- Hardware features -->
+  <uses-feature 
+      android:name="android.hardware.location" 
+      android:required="true" />
+  <uses-feature 
+      android:name="android.hardware.location.gps" 
+      android:required="false" />
+  <uses-feature 
+      android:name="android.hardware.location.network" 
+      android:required="false" />
+
   <queries>
     <intent>
       <action android:name="android.intent.action.VIEW"/>
@@ -33,11 +46,21 @@
       <data android:scheme="https"/>
     </intent>
   </queries>
+
   <application android:name=".MainApplication" android:label="@string/app_name" android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher_round" android:allowBackup="true" android:theme="@style/AppTheme" android:supportsRtl="true">
     <meta-data android:name="expo.modules.updates.ENABLED" android:value="false"/>
     <meta-data android:name="expo.modules.updates.EXPO_UPDATES_CHECK_ON_LAUNCH" android:value="ALWAYS"/>
     <meta-data android:name="expo.modules.updates.EXPO_UPDATES_LAUNCH_WAIT_MS" android:value="0"/>
-    <activity android:name=".MainActivity" android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|uiMode" android:launchMode="singleTask" android:windowSoftInputMode="adjustResize" android:theme="@style/Theme.App.SplashScreen" android:exported="true" android:screenOrientation="portrait">
+
+    <!-- Main Activity - UPDATED -->
+    <activity 
+        android:name=".MainActivity" 
+        android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|uiMode" 
+        android:launchMode="singleTop" 
+        android:windowSoftInputMode="adjustResize" 
+        android:theme="@style/Theme.App.SplashScreen" 
+        android:exported="true" 
+        android:screenOrientation="portrait">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
         <category android:name="android.intent.category.LAUNCHER"/>
@@ -51,28 +74,94 @@
       </intent-filter>
     </activity>
 
-          <!-- Background Location Service -->
-        <service
-            android:name="com.yourapp.backgroundlocation.LocationService"
-            android:enabled="true"
-            android:exported="false"
-            android:foregroundServiceType="location"
-            android:stopWithTask="false" />
-            
-        <!-- Boot Receiver (optional - to restart service after reboot) -->
-        <receiver
-            android:name="com.yourapp.backgroundlocation.BootReceiver"
-            android:enabled="true"
-            android:exported="false">
-            <intent-filter android:priority="1000">
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
-                <action android:name="android.intent.action.PACKAGE_REPLACED" />
-                <data android:scheme="package" />
-            </intent-filter>
-        </receiver>
+    <!-- Request Modal Activity - UPDATED -->
+    <!-- <activity -->
+        <!-- android:name=".RequestModalActivity"
+        android:exported="false"
+        android:launchMode="singleTop"
+        android:screenOrientation="portrait"
+        android:showWhenLocked="true"
+        android:turnScreenOn="true"
+        android:excludeFromRecents="true"
+        android:theme="@style/Theme.RequestModal" /> -->
 
+    <!-- Location Service - EXISTING -->
+    <service
+        android:name=".LocationService"
+        android:enabled="true"
+        android:exported="false"
+        android:foregroundServiceType="location"
+        android:stopWithTask="false" />
 
-        
+    <!-- Firebase Messaging Service - EXISTING -->
+    <service
+        android:name=".MyFirebaseMessagingService"
+        android:exported="false"
+        android:stopWithTask="false">
+      <intent-filter>
+          <action android:name="com.google.firebase.MESSAGING_EVENT" />
+      </intent-filter>
+    </service>
+
+    <!-- NEW SERVICES TO ADD -->
+    <!-- Overlay Service -->
+    <!-- <service -->
+        <!-- android:name=".OverlayService"
+        android:enabled="true"
+        android:exported="false"
+        android:foregroundServiceType="systemExempted"
+        android:stopWithTask="false" /> -->
+
+    <!-- Request Handler Service -->
+    <!-- <service -->
+        <!-- android:name=".RequestHandlerService"
+        android:enabled="true"
+        android:exported="false"
+        android:foregroundServiceType="systemExempted"
+        android:stopWithTask="false" /> -->
+
+    <!-- Notification Action Receiver - EXISTING -->
+    <receiver android:name=".NotificationActionReceiver" 
+        android:enabled="true"
+        android:exported="false" />
+
+    <!-- Boot Receiver - UPDATED -->
+    <receiver
+        android:name=".BootReceiver"
+        android:enabled="true"
+        android:exported="true">
+      <intent-filter android:priority="1000">
+          <action android:name="android.intent.action.BOOT_COMPLETED" />
+          <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+          <category android:name="android.intent.category.DEFAULT" />
+      </intent-filter>
+    </receiver>
+
+    <!-- Auto-start Receiver - NEW -->
+    <receiver
+        android:name=".AutoStartReceiver"
+        android:enabled="true"
+        android:exported="true">
+      <intent-filter>
+          <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+          <action android:name="android.intent.action.PACKAGE_REPLACED" />
+          <data android:scheme="package" />
+      </intent-filter>
+    </receiver>
+
+    <!-- Firebase Messaging default settings - FIXED WITH tools:replace -->
+    <meta-data
+        android:name="com.google.firebase.messaging.default_notification_icon"
+        android:resource="@android:drawable/ic_dialog_info"
+        tools:replace="android:resource" />
+    <meta-data
+        android:name="com.google.firebase.messaging.default_notification_color"
+        android:resource="@android:color/holo_red_dark"
+        tools:replace="android:resource" />
+    <meta-data
+        android:name="com.google.firebase.messaging.default_notification_channel_id"
+        android:value="repair_request_channel"
+        tools:replace="android:value" />
+
   </application>
 </manifest>

@@ -35,6 +35,6 @@ export const COLORS = {
     extraLarge: 28,
   };
 
-  export const API = "http://10.156.44.78:3000/api"
+  export const API = "http://10.0.2.2:3000/api"
   
-  
+  // export const API = "https://wecrewbackend-53978643500.europe-west1.run.app/api"

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E0000000">
+
+    <!-- Main Modal Card -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginHorizontal="24dp"
+        android:background="#FF1A1A1A"
+        android:elevation="16dp"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <!-- Header -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="🔧 New Repair Request"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <!-- Customer Name -->
+        <TextView
+            android:id="@+id/modal_customer_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:text="Customer Name"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <!-- Location -->
+        <TextView
+            android:id="@+id/modal_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"
+            android:text="📍 Location"
+            android:textColor="#CCCCCC"
+            android:textSize="16sp" />
+
+        <!-- Issue Description -->
+        <TextView
+            android:id="@+id/modal_issue_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="#33FFFFFF"
+            android:padding="12dp"
+            android:text="Issue Description"
+            android:textColor="@android:color/white"
+            android:textSize="14sp" />
+
+        <!-- Timer -->
+        <TextView
+            android:id="@+id/modal_timer_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:background="#44FF0000"
+            android:padding="8dp"
+            android:text="Auto-reject in: 30s"
+            android:textColor="#FF6B6B"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <!-- Action Buttons Container -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <!-- Accept Button -->
+            <Button
+                android:id="@+id/modal_accept_button"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:background="#FF4CAF50"
+                android:elevation="4dp"
+                android:text="✓ ACCEPT"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <!-- Reject Button -->
+            <Button
+                android:id="@+id/modal_reject_button"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:background="#FFF44336"
+                android:elevation="4dp"
+                android:text="✗ REJECT"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <!-- Additional Info -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:text="Swipe up for more details"
+            android:textColor="#888888"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+
+</RelativeLayout>

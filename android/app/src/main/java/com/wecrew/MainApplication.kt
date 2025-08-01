@@ -13,6 +13,8 @@ import com.facebook.react.defaults.DefaultReactNativeHost
 import com.facebook.react.soloader.OpenSourceMergedSoMapping
 import com.facebook.soloader.SoLoader
 import com.WeCrew.backgroundlocation.BackgroundLocationPackage
+import com.WeCrew.RequestModalPackage
+import com.WeCrew.SoundControlPackage
 
 import expo.modules.ApplicationLifecycleDispatcher
 import expo.modules.ReactNativeHostWrapper
@@ -25,6 +27,8 @@ class MainApplication : Application(), ReactApplication {
           override fun getPackages(): List<ReactPackage> {
             val packages = PackageList(this).packages
              packages.add(BackgroundLocationPackage()) // Add your custom package
+             packages.add(RequestModalPackage())
+             packages.add(SoundControlPackage())
             // Packages that cannot be autolinked yet can be added manually here, for example:
             // packages.add(new MyReactNativePackage());
             return packages
