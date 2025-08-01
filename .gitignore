@@ -37,3 +37,12 @@ yarn-error.*
 
 
 ios/
+android/.gradle/
+android/build/
+android/app/build/
+android/app/**/intermediates/**/
+android/app/**/obj/**/
+*.apk
+*.aab
+*.so
+**/build/
